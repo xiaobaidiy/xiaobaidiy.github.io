@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>机械手臂一--刚体的运动状态</title>
+      <link href="/2020/05/04/robot-arm-1/"/>
+      <url>/2020/05/04/robot-arm-1/</url>
+      
+        <content type="html"><![CDATA[<h1 id="导读"><a href="#导读" class="headerlink" title="导读"></a>导读</h1><p>刚体在空间中的运动方式有两种，一种是移动，一种是转动，它们各有3个DOF。对于移动来说，它可以沿着$\hat{X}$轴，$\hat{Y}$轴和$\hat{Z}$轴移动， 同样的，转动也可以沿着$\hat{X}$轴，$\hat{Y}$轴和$\hat{Z}$轴进行转动。为了描述刚体在空间中的运动状态，我们通常会在它的质心位置建立一个坐标系（frame）, 通过得到这个坐标系与世界坐标系之间的关系，我们可以知道这个刚体在空间中的姿态。</p><h1 id="移动"><a href="#移动" class="headerlink" title="移动"></a>移动</h1><p>刚体的移动可以用向量$\vec{P}$来描述，它即明确了移动的方向，又说明了移动的大小。如下图：<br><img src="1.png" alt=""><br>因为位置是相对的，为了表明$\vec{P}$是以A frame为基坐标上B frame的位置，我们通常写为$^AP_B org$，其中org指的是B frame的原点，即刚体的质心。</p><h1 id="转动"><a href="#转动" class="headerlink" title="转动"></a>转动</h1><p>刚体的转动需要用三个向量来描述，因此我们将它写成矩阵的形式，并将这个矩阵称之为旋转矩阵（Rotation Matrix），用$^A_BR$来表示（B frame相对于A frame）。$^A_BR$的三个columns其实是B frame的$\hat{X}$轴，$\hat{Y}$轴以及$\hat{Z}$轴方向的单位向量在A frame下的投影，因此旋转矩阵的三个cloumns的长度都为1。如图：<br><img src="2.png" alt=""></p><h2 id="旋转矩阵的特性"><a href="#旋转矩阵的特性" class="headerlink" title="旋转矩阵的特性"></a>旋转矩阵的特性</h2><p>旋转矩阵有如下特性：</p><ul><li>$^A_BR$=$^B_AR^T\to$ B对A的旋转矩阵就相当于A对B的旋转矩阵的转置</li><li>$^A_BR^T$=$^A_BR^{-1}$=$^B_AR\to$ 旋转矩阵的逆矩阵等于它的转置。这个特性非常有用，因为逆矩阵的计算往往需要很大的计算量，有了这个特性，我们就可以很容易的得到旋转矩阵的逆矩阵。</li></ul><h2 id="旋转矩阵的使用"><a href="#旋转矩阵的使用" class="headerlink" title="旋转矩阵的使用"></a>旋转矩阵的使用</h2><p>旋转矩阵除了可以描述B frame相对于A frame的姿态以外，也可以计算向量在不同frame下的坐标。比如有一个在B frame下的向量$^BP$，那么它在A frame下的坐标就可以这样得到: $^AP$=$^A_BR$$^BP$<br>以上的应用都是在已知两个frame的旋转矩阵下进行的，当有一个向量要在同一个frame下沿某个轴转动某个角度时，我们就需要计算出旋转矩阵，计算方式如下：<br>$$<br>R_{ {\hat{X} }_A}(\theta)=<br>    \begin{bmatrix}<br>    1 &amp; 0 &amp; 0 \\<br>    0 &amp; cos\theta &amp; -sin\theta \\<br>    0 &amp; sin\theta &amp; cos\theta<br>    \end{bmatrix}<br>$$$$<br>R_{ {\hat{Y} }_A}(\theta) =<br>    \begin{bmatrix}<br>    cos\theta &amp; 0 &amp; sin\theta \\<br>    0 &amp; 1 &amp; 0 \\<br>    -sin\theta &amp; 0 &amp; cos\theta<br>    \end{bmatrix}<br>$$$$<br>R_{ {\hat{Z} }_A}(\theta) =<br>    \begin{bmatrix}<br>    cos\theta &amp; -sin\theta &amp; 0 \\<br>    sin\theta &amp; cos\theta &amp; 0 \\<br>    0 &amp; 0 &amp; 1<br>    \end{bmatrix}<br>$$<br>例如有点$^AP$对$\hat{X}_A$轴转动$\theta$角度后得到了点$^AP’$,那么点$^AP’$的坐标就是：$$<br>    ^AP’=R_{ {\hat{X} }_A}(\theta)^AP<br>$$注意：点$^AP’$的坐标是基于{A}的，而不是旋转后的坐标{A’}的。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 机械手臂 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 机械手臂 </tag>
+            
+            <tag> Robotic arm </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
