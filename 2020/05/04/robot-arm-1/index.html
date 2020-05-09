@@ -415,8 +415,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E5%88%9A%E4%BD%93/">
-                                <span class="chip bg-color">刚体</span>
+                            <a href="/tags/%E5%88%9A%E4%BD%93%E8%BF%90%E5%8A%A8/">
+                                <span class="chip bg-color">刚体运动</span>
                             </a>
                         
                     </div>
@@ -449,7 +449,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    744
+                    776
                 </div>
                 
 
@@ -461,7 +461,10 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="导读"><a href="#导读" class="headerlink" title="导读"></a>导读</h1><p>刚体在空间中的运动方式有两种，一种是移动，一种是转动，它们各有3个DOF。对于移动来说，它可以沿着$\hat{X}$轴，$\hat{Y}$轴和$\hat{Z}$轴移动， 同样的，转动也可以沿着$\hat{X}$轴，$\hat{Y}$轴和$\hat{Z}$轴进行转动。为了描述刚体在空间中的运动状态，我们通常会在它的质心位置建立一个坐标系（frame）, 通过得到这个坐标系与世界坐标系之间的关系，我们可以知道这个刚体在空间中的姿态。</p>
+                <blockquote>
+<p>本系列文章是以林沛群老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics1" target="_blank" rel="noopener">机器人学一</a>为参考，进行归纳整理。</p>
+</blockquote>
+<h1 id="导读"><a href="#导读" class="headerlink" title="导读"></a>导读</h1><p>刚体在空间中的运动方式有两种，一种是移动，一种是转动，它们各有3个DOF。对于移动来说，它可以沿着$\hat{X}$轴，$\hat{Y}$轴和$\hat{Z}$轴移动， 同样的，转动也可以沿着$\hat{X}$轴，$\hat{Y}$轴和$\hat{Z}$轴进行转动。为了描述刚体在空间中的运动状态，我们通常会在它的质心位置建立一个坐标系（frame）, 通过得到这个坐标系与世界坐标系之间的关系，我们可以知道这个刚体在空间中的姿态。</p>
 <h1 id="移动"><a href="#移动" class="headerlink" title="移动"></a>移动</h1><p>刚体的移动可以用向量$\vec{P}$来描述，它即明确了移动的方向，又说明了移动的大小。如下图：<br><img src="1.png" alt=""><br>因为位置是相对的，为了表明$\vec{P}$是以A frame为基坐标上B frame的位置，我们通常写为$^AP_B org$，其中org指的是B frame的原点，即刚体的质心。</p>
 <h1 id="转动"><a href="#转动" class="headerlink" title="转动"></a>转动</h1><p>刚体的转动需要用三个向量来描述，因此我们将它写成矩阵的形式，并将这个矩阵称之为旋转矩阵（Rotation Matrix），用$^A_BR$来表示（B frame相对于A frame）。$^A_BR$的三个columns其实是B frame的$\hat{X}$轴，$\hat{Y}$轴以及$\hat{Z}$轴方向的单位向量在A frame下的投影，因此旋转矩阵的三个cloumns的长度都为1。如图：<br><img src="2.png" alt=""></p>
 <h2 id="旋转矩阵的特性"><a href="#旋转矩阵的特性" class="headerlink" title="旋转矩阵的特性"></a>旋转矩阵的特性</h2><p>旋转矩阵有如下特性：</p>
@@ -533,8 +536,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E5%88%9A%E4%BD%93/">
-                                    <span class="chip bg-color">刚体</span>
+                                <a href="/tags/%E5%88%9A%E4%BD%93%E8%BF%90%E5%8A%A8/">
+                                    <span class="chip bg-color">刚体运动</span>
                                 </a>
                             
                         </div>
@@ -610,9 +613,9 @@
                 <a href="/2020/05/05/robot-arm-2/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/30.jpg" class="responsive-img" alt="机械手臂一--旋转矩阵和变换矩阵的计算">
+                        <img src="/medias/featureimages/30.jpg" class="responsive-img" alt="机械手臂二--旋转矩阵和变换矩阵的计算">
                         
-                        <span class="card-title">机械手臂一--旋转矩阵和变换矩阵的计算</span>
+                        <span class="card-title">机械手臂二--旋转矩阵和变换矩阵的计算</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -693,8 +696,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%88%9A%E4%BD%93/">
-                        <span class="chip bg-color">刚体</span>
+                    <a href="/tags/%E5%88%9A%E4%BD%93%E8%BF%90%E5%8A%A8/">
+                        <span class="chip bg-color">刚体运动</span>
                     </a>
                     
                 </div>
