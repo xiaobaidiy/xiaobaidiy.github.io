@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>机械手臂四--逆向运动学</title>
+      <link href="/2020/05/11/robot-arm-4/"/>
+      <url>/2020/05/11/robot-arm-4/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>本系列文章是以林沛群老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics1" target="_blank" rel="noopener">机器人学一</a>为参考，进行归纳整理。</p></blockquote><h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>上一讲介绍了正向运动学（Forward Kinematics），它的计算过程是给予$\theta_i$（可计算出$^{i-1}_iT$），然后求出手臂末端位置或坐标。相反，对于逆向运动学（Inverse Kinematics）来说，就是给予手臂末端位置或坐标，求得$\theta_i$。</p><h1 id="求解概念"><a href="#求解概念" class="headerlink" title="求解概念"></a>求解概念</h1><p>假设有一个6DOF的机械臂，未知的joint angles就有6个（$\theta_i$或$d_i$，$i=1,…,6$）。那么它的Transformation Matirx就可以写成这样的形式：<br>$$<br>^0_6T=<br> \left[<br>\begin{array}{ccc|c}<br>  &amp;^0_6R_{3\times3}&amp;&amp;^0P_{6 org 3\times1} \\<br>\hline<br>  0&amp;0&amp;0&amp;1<br>\end{array}<br>\right] _{4\times4}<br>$$<br>对于任何一个Transformation Matrix来说，它们都只有6个自由度，因为虽然旋转矩阵$R$里有九个数字，但是$\hat X, \hat Y, \hat Z$的长度为1，增加了3个限制条件，然后$\hat X, \hat Y, \hat Z$又要两两要垂直，又增加了3个限制条件，所以只有3个自由度，再加上移动向量$P$的3个未知数，一共就有6个自由度。为了解出这个Transformation Matrix，我们需要解出$R$和$P$，一共有12个非线性方程式，再加上6个限制条件，来解6个未知数。所以6自由度的机械臂是没有冗余的，需要用pieper准则来判断机械臂是否有解析解，后面会介绍。但是当机械臂大于6个自由度时，就会有冗余自由度，这时IK就有无数多的解，在实际应用中需要增加限制条件方能求出有效解。</p><h1 id="多重解"><a href="#多重解" class="headerlink" title="多重解"></a>多重解</h1><p>因为那12个方程式是非线性的，所以并不代表具有唯一解，机械手臂的解是由自身结构所决定的。比如，上一讲中提到的PUMA机械手臂（6 DOF），它的前3个DOF是用来控制手臂末端在空间中的位置，对于同一个位置它就有四组解，如下图：<br><img src="1.png" alt=""><br>同时，同一个位置下，手腕部位的转动姿态又有两组解：<br>$$<br>\begin{aligned}<br>&amp;\theta^{‘}_4 = \theta_4 + 180^\circ \\<br>&amp;\theta^{‘}_5 = -\theta_5 \\<br>&amp;\theta^{‘}_6 = \theta_6 + 180^\circ<br>\end{aligned}<br>$$<br>所以针对一些特定工作点，就有2x4=8组解。但是，有时因为手臂本身的几何限制或者空间限制，并不是任何一个解都可以用。当出现多组解时，我们就需要进行选择，选择的方式有：</p><ul><li>选择距离目前状态最近的解，这样最快，最省能。</li><li>选择避开障碍物的解，如果有障碍物就需要考虑进来。</li></ul><h1 id="求解方法"><a href="#求解方法" class="headerlink" title="求解方法"></a>求解方法</h1><p>求解Inverse Kinematics的方法有两种，<strong>解析法</strong>和<strong>数值法</strong>。解析法就是用代数（algebraic）计算Transformation Matrix并解方程的方法或着几何（geometric）法画图再运用三角函数来计算。而数值法就是是采用某种计算方法，如有限元法， 数值逼近法，插值法等得到的解，其<strong>正确性不如解析法</strong>可靠。目前大多数机械手臂都直接设计成有解析解的。</p><h2 id="举例：RRR机械手臂"><a href="#举例：RRR机械手臂" class="headerlink" title="举例：RRR机械手臂"></a>举例：RRR机械手臂</h2><p>这里以一个RRR机械手臂为例，分别介绍解析法中代数方法和几何方法计算IK问题。<br><img src="2.png" alt=""><br>首先我们计算出它的Transformation Matrix，如下：<br>$$<br>^0_3T=<br>\begin{bmatrix}<br>c_{123} &amp; -s_{123} &amp; 0 &amp; l_1c_1+l_2c_{12} \\<br>s_{123} &amp; c_{123} &amp; 0 &amp; l_1s_1+l_2s_{12} \\<br>0 &amp; 0 &amp; 1 &amp; 0 \\<br>0 &amp; 0 &amp; 0 &amp; 1 \\<br>\end{bmatrix}<br>$$<br>我们的目标是得到如下的Transformation Matrix：<br>$$<br>^0_3T=<br>\begin{bmatrix}<br>c_{\phi} &amp; -s_{\phi} &amp; 0 &amp; x \\<br>s_{\phi} &amp; c_{\phi} &amp; 0 &amp; y \\<br>0 &amp; 0 &amp; 1 &amp; 0 \\<br>0 &amp; 0 &amp; 0 &amp; 1 \\<br>\end{bmatrix}<br>$$</p><h3 id="几何法"><a href="#几何法" class="headerlink" title="几何法"></a>几何法</h3><p>对于这样一个简单的机械手臂来说，在一些特定的点仍然会有多重解，比如下图所示，手臂到达（x,y）点可以以蓝色折线的姿态，也可以以绿色折线的姿态。计算方式就是先运用余弦定理先计算出$\theta_2$，再利用余弦定理计算出中间角$\psi$，最后算出$\theta_1$和$\theta_3$。<br><img src="3.png" alt=""><br><img src="4.png" alt=""></p><h3 id="代数法"><a href="#代数法" class="headerlink" title="代数法"></a>代数法</h3><p><img src="5.png" alt=""><br><img src="6.png" alt=""><br><img src="7.png" alt=""></p><h2 id="Pieper’s-Solution"><a href="#Pieper’s-Solution" class="headerlink" title="Pieper’s Solution"></a>Pieper’s Solution</h2><p>Pieper准则就是说对于6自由度的机械手臂满足以下两个条件中的一个，就会有解析解。</p><ul><li>三个相邻关节轴相交于一点；</li><li>三个相邻关节轴相互平行。</li></ul><p>比如之前介绍的PUMA机械手臂，它的前三轴是用来产生移动的，后三轴是用来产生转动的，并且相交于一点，满足Pieper准则，$^0P_{6 org} = ^0P_{4 org}$<br><img src="8.png" alt=""><br>首先我们要根据最终的位置解出前三轴的角度。<br><img src="9.png" alt=""><br><img src="10.png" alt=""><br><img src="11.png" alt=""><br><img src="12.png" alt=""><br>在计算$\theta_3$时，用到了一种三角函数方程式求解的方法，如下图：<br><img src="13.png" alt=""><br>到这里，通过位置计算我们已经得到了$\theta_1，\theta_2，\theta_3$，接下来就要计算它的Orientation了。因为已经知道了$\theta_1，\theta_2，\theta_3$，所以就得到了$^0_3R$，从而推导出来$^3_6R=^0_3R^{-1}{^0_6R}$，最后我们就可以用Z—Y—Z Euler angle的方法解出$\theta_4，\theta_5，\theta_6$。但是这里要注意，我们需要把4 frame的Y轴转到5 frame的Z轴位置，这样的话5 frame对Z轴转动就相当于对4 frame的Y轴转动，然后因为4 frame的Z轴与6 frame重合，所以对6 frame的Z轴转动就相当与对4 frame的Z轴转动，但是要注意需要将4 frame转到与6 frame重合，这样就完成了Z—Y—Z的转动。这里用$\theta_4’，\theta_5’，\theta_6’$来说明用Z—Y—Z方法算出来的角度，而$\theta_4，\theta_5，\theta_6$是DH定义的角度，它们之间有一些差异。图解如下：<br><img src="14.png" alt=""><br><img src="15.png" alt=""></p><h3 id="举例：物件取放任务"><a href="#举例：物件取放任务" class="headerlink" title="举例：物件取放任务"></a>举例：物件取放任务</h3><p><img src="16.png" alt=""><br><img src="17.png" alt=""><br><img src="18.png" alt=""><br><img src="19.png" alt=""><br><img src="20.png" alt=""><br><img src="21.png" alt=""><br><img src="22.png" alt=""></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 机械手臂 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 逆向运动学 </tag>
+            
+            <tag> Inverse Kinematics </tag>
+            
+            <tag> Pieper Solution </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>机械手臂三--正向运动学</title>
       <link href="/2020/05/09/robot-arm-3/"/>
       <url>/2020/05/09/robot-arm-3/</url>
