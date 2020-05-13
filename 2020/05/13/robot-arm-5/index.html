@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="机械手臂四--逆向运动学, “DIY”">
+    <meta name="keywords" content="机械手臂五--轨迹规划, “DIY”">
     <meta name="description" content="让DIY变得简单又有趣！">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>机械手臂四--逆向运动学 | XiaobaiDIY</title>
+    <title>机械手臂五--轨迹规划 | XiaobaiDIY</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -304,7 +304,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">机械手臂四--逆向运动学</h1>
+                    <h1 class="description center-align post-title">机械手臂五--轨迹规划</h1>
                 </div>
             </div>
         </div>
@@ -415,16 +415,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E9%80%86%E5%90%91%E8%BF%90%E5%8A%A8%E5%AD%A6/">
-                                <span class="chip bg-color">逆向运动学</span>
-                            </a>
-                        
-                            <a href="/tags/Inverse-Kinematics/">
-                                <span class="chip bg-color">Inverse Kinematics</span>
-                            </a>
-                        
-                            <a href="/tags/Pieper-Solution/">
-                                <span class="chip bg-color">Pieper Solution</span>
+                            <a href="/tags/%E6%9C%BA%E6%A2%B0%E6%89%8B%E8%87%82%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/">
+                                <span class="chip bg-color">机械手臂轨迹规划</span>
                             </a>
                         
                     </div>
@@ -448,7 +440,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-05-11
+                    2020-05-13
                 </div>
                 
 
@@ -457,7 +449,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    1.6k
                 </div>
                 
 
@@ -472,24 +464,57 @@
                 <blockquote>
 <p>本系列文章是以林沛群老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics1" target="_blank" rel="noopener">机器人学一</a>为参考，进行归纳整理。</p>
 </blockquote>
-<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>上一讲介绍了正向运动学（Forward Kinematics），它的计算过程是给予$\theta_i$（可计算出$^{i-1}_iT$），然后求出手臂末端位置或坐标。相反，对于逆向运动学（Inverse Kinematics）来说，就是给予手臂末端位置或坐标，求得$\theta_i$。</p>
-<h1 id="求解概念"><a href="#求解概念" class="headerlink" title="求解概念"></a>求解概念</h1><p>假设有一个6DOF的机械臂，未知的joint angles就有6个（$\theta_i$或$d_i$，$i=1,…,6$）。那么它的Transformation Matirx就可以写成这样的形式：<br>$$<br>^0_6T=<br> \left[<br>\begin{array}{ccc|c}<br>  &amp;^0_6R_{3\times3}&amp;&amp;^0P_{6 org 3\times1} \\<br>\hline<br>  0&amp;0&amp;0&amp;1<br>\end{array}<br>\right] _{4\times4}<br>$$<br>对于任何一个Transformation Matrix来说，它们都只有6个自由度，因为虽然旋转矩阵$R$里有九个数字，但是$\hat X, \hat Y, \hat Z$的长度为1，增加了3个限制条件，然后$\hat X, \hat Y, \hat Z$又要两两要垂直，又增加了3个限制条件，所以只有3个自由度，再加上移动向量$P$的3个未知数，一共就有6个自由度。为了解出这个Transformation Matrix，我们需要解出$R$和$P$，一共有12个非线性方程式，再加上6个限制条件，来解6个未知数。所以6自由度的机械臂是没有冗余的，需要用pieper准则来判断机械臂是否有解析解，后面会介绍。但是当机械臂大于6个自由度时，就会有冗余自由度，这时IK就有无数多的解，在实际应用中需要增加限制条件方能求出有效解。</p>
-<h1 id="多重解"><a href="#多重解" class="headerlink" title="多重解"></a>多重解</h1><p>因为那12个方程式是非线性的，所以并不代表具有唯一解，机械手臂的解是由自身结构所决定的。比如，上一讲中提到的PUMA机械手臂（6 DOF），它的前3个DOF是用来控制手臂末端在空间中的位置，对于同一个位置它就有四组解，如下图：<br><img src="1.png" alt=""><br>同时，同一个位置下，手腕部位的转动姿态又有两组解：<br>$$<br>\begin{aligned}<br>&amp;\theta^{‘}_4 = \theta_4 + 180^\circ \\<br>&amp;\theta^{‘}_5 = -\theta_5 \\<br>&amp;\theta^{‘}_6 = \theta_6 + 180^\circ<br>\end{aligned}<br>$$<br>所以针对一些特定工作点，就有2x4=8组解。但是，有时因为手臂本身的几何限制或者空间限制，并不是任何一个解都可以用。当出现多组解时，我们就需要进行选择，选择的方式有：</p>
+<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>机械手臂的轨迹规划就是说当手臂执行某一个操作时，比如说，从一个位置取某一物件然后移动到另一个位置，这段运动轨迹就需要我们来规划，规划的内容就包括位置、速度以及加速度随时间的变化。通常我们理想的轨迹都是平滑的曲线，其中包括起始点{$T_{initial}$}，很多的中间点{$T_{t_i}$}以及终点{$T_{final}$}。如果轨迹变化很大的话，那么在变化的那个点就需要手臂有很大的torque来改变运动状态，有时手臂可能做不到，而且会让整个运动过程看起来不流畅。<br><img src="1.png" alt=""></p>
+<h1 id="轨迹规划"><a href="#轨迹规划" class="headerlink" title="轨迹规划"></a>轨迹规划</h1><p>轨迹的规划方式有两种，一种是在joint-space下进行，一种是在Cartesian-space下进行。接下来将分别介绍两种方法，以及它们的优缺点。</p>
+<h2 id="Joint-space下的轨迹规划"><a href="#Joint-space下的轨迹规划" class="headerlink" title="Joint-space下的轨迹规划"></a>Joint-space下的轨迹规划</h2><p>在Joint-space下规划轨迹的方法如下：</p>
+<ol>
+<li>定义这段轨迹在空间中的起始点{$T_{initial}$}，中间点{$T_{t_i}$}以及终点{$T_{final}$}。</li>
+<li>计算这些点的IK，得到在每个时间点$t_i$，手臂的每个joint所对应的角度。</li>
+<li>对每一个joint都在其自己的角度坐标系下规划一条平滑的曲线。</li>
+<li>计算FK，检查手臂末端点在Cartesian-space下轨迹的可行性（可能会碰到障碍物）。</li>
+</ol>
+<p>具体过程如下图：<br><img src="2.png" alt=""></p>
+<blockquote>
+<p>Note：<br>优点：计算量小，只需要计算起始点、中间点和终点的IK。<br>缺点：在空间中的运动轨迹不直观。</p>
+</blockquote>
+<h2 id="Cartesian-space下的轨迹规划"><a href="#Cartesian-space下的轨迹规划" class="headerlink" title="Cartesian-space下的轨迹规划"></a>Cartesian-space下的轨迹规划</h2><p>在Cartesian-space下规划轨迹的方法如下：</p>
+<ol>
+<li>定义这段轨迹在空间中的起始点{$T_{initial}$}，中间点{$T_{t_i}$}以及终点{$T_{final}$}。</li>
+<li>对每一个手臂末端点的状态参数（$x,y,z,\theta_x,\theta_y,\theta_z$）规划一条平滑的曲线。</li>
+<li>将规划好的手臂末端点状态的轨迹点计算IK，转换到joint-space下。</li>
+<li>检查joint在joint-space下轨迹的可行性（有的joint的转动角度有限制或者角加速度太大手臂做不到）。</li>
+</ol>
+<p>具体过程如下图：<br><img src="3.png" alt=""></p>
+<blockquote>
+<p>Note：<br>优点：在空间中的运动轨迹比较直观。<br>缺点：计算量大，需要计算整个轨迹点的IK。</p>
+</blockquote>
+<h1 id="轨迹规划曲线—三次多项式"><a href="#轨迹规划曲线—三次多项式" class="headerlink" title="轨迹规划曲线—三次多项式"></a>轨迹规划曲线—三次多项式</h1><p>轨迹规划中平滑的曲线需要写成函数的形式，这样我们才能得到不同时刻的值。在这里我们用三次多项式（Cubic Polynomials）的形式来规划路径，也就是说，每两个中间点之间可以写成三次多项式的函数形式，不同轨迹区段[$t_i$ $t_{i+1}$]是不同的三次多项式。然后为了使整体的路径规划平滑，我们需要给相邻的两个区段增加限制条件，包括位置和速度（$\theta(t_i)$，$\theta(t_{i+1})$，$\dot\theta(t_i)$，$\dot\theta(t_{i+1})$）。<br><img src="4.png" alt=""></p>
+<h2 id="解三次多项式"><a href="#解三次多项式" class="headerlink" title="解三次多项式"></a>解三次多项式</h2><ol>
+<li><p>三次多项式的通式：<br>$$<br>\theta(\tilde t)=a_0+a_1\tilde t+a_2\tilde t^2+a_3\tilde t^3, 4\space unknown\space para: a_j \space _{j=0…3}<br>$$<br>每一个区段[$t_i$ $t_{i+1}$]都有一个这样的三次多项式，只不过每段的参数不同。</p>
+</li>
+<li><p>$\tilde t$的取值：<br>对每一个区段：$t\in[t_i,t_{i+1}]$<br>$\tilde t=t-t_i$，所以$\tilde t|_{t=t_i}=0$</p>
+</li>
+<li><p>增加边界条件：<br>首先当$t=t_i$和$t=t_{i+1}$时，这个三次多项式函数需要落在$\theta_i$和$\theta_{i+1}$上，所以有：<br>$$<br>\begin{aligned}<br>&amp;\theta(\tilde t|_{t=t_i})=\theta_i=\color{red}{a_0} \\<br>&amp;\theta(\tilde t|_{t=t_{i+1} })=\theta_{i+1}=a_0+a_1\Delta t+a_2\Delta t^2+a_3\Delta t^3 \\<br>\end{aligned}<br>$$<br>然后这个三次多项式函数在$t=t_i$和$t=t_{i+1}$时的速度也需要我们来设计，所以有：<br>$$<br>\begin{aligned}<br>&amp;\dot \theta(\tilde t|_{t=t_i})=\dot \theta_i=\color{red}{a_1} \\<br>&amp;\dot \theta(\tilde t|_{t=t_{i+1} })=\dot \theta_{i+1}=a_1+2a_2\Delta t+3a_4\Delta t^2 \\<br>\end{aligned}<br>$$</p>
+</li>
+<li><p>联立上面4个方程式最后解出：<br>$$<br>\begin{aligned}<br>&amp;\color{red}{a_2} = \frac{3}{\Delta t^2}(\theta_{i+1}-\theta_i)-\frac{2}{\Delta t}\dot \theta_i-\frac{1}{\Delta t}\dot \theta_{i+1} \\<br>&amp;\color{red}{a_3} = -\frac{2}{\Delta t^3}(\theta_{i+1}-\theta_i)+\frac{1}{\Delta t^2}(\dot \theta_{i+1}+\dot \theta_i)<br>\end{aligned}<br>$$</p>
+</li>
+<li><p>用Matrix的方式计算：<br><img src="5.png" alt=""></p>
+</li>
+</ol>
+<h2 id="多段三次多项式"><a href="#多段三次多项式" class="headerlink" title="多段三次多项式"></a>多段三次多项式</h2><p>在上面的计算中，我们需要设计在边界的速度条件$\dot \theta_i$和$\dot \theta_{i+1}$，那么我们该如何设计呢？</p>
+<ol>
+<li>自己定义。不建议用这个方法，这样会使我们整个路径规划变得很复杂。</li>
+<li>自动生成：<br>如果$\dot \theta_i$在$t_i$前后变号，那么$\dot \theta_i$就取0；<br>如果$\dot \theta_i$在$t_i$前后同号，那么$\dot \theta_i$就取前后两段速度的平均数；<br><img src="6.png" alt=""></li>
+</ol>
+<h3 id="举例：有一个中间点的路径规划"><a href="#举例：有一个中间点的路径规划" class="headerlink" title="举例：有一个中间点的路径规划"></a>举例：有一个中间点的路径规划</h3><p><img src="7.png" alt=""><br><img src="8.png" alt=""><br><img src="9.png" alt=""><br><img src="10.png" alt=""></p>
+<h2 id="多段三次多项式通解"><a href="#多段三次多项式通解" class="headerlink" title="多段三次多项式通解"></a>多段三次多项式通解</h2><p>假设一共有N+1个点，其中有1个初始点，N-1个中间点和1个终点。那么我们一共就有N个三次多项式，每个三次多项式有4个未知参数，所以一共有4N个未知量。为了求解这4N个未知量，我们就需要4N个限制条件：</p>
 <ul>
-<li>选择距离目前状态最近的解，这样最快，最省能。</li>
-<li>选择避开障碍物的解，如果有障碍物就需要考虑进来。</li>
+<li>每一段会有两个位置条件，所以一共有2N个位置条件；</li>
+<li>每一个中间点会有一个速度条件和一个加速度条件，所以一共有2（N-1）个速度和加速度条件；</li>
+<li>目前为止一共有4N-2个条件，那么最后两个条件我们可以限制起始点和终点点的速度或者是加速度，这样就有4N个条件了。</li>
 </ul>
-<h1 id="求解方法"><a href="#求解方法" class="headerlink" title="求解方法"></a>求解方法</h1><p>求解Inverse Kinematics的方法有两种，<strong>解析法</strong>和<strong>数值法</strong>。解析法就是用代数（algebraic）计算Transformation Matrix并解方程的方法或着几何（geometric）法画图再运用三角函数来计算。而数值法就是是采用某种计算方法，如有限元法， 数值逼近法，插值法等得到的解，其<strong>正确性不如解析法</strong>可靠。目前大多数机械手臂都直接设计成有解析解的。</p>
-<h2 id="举例：RRR机械手臂"><a href="#举例：RRR机械手臂" class="headerlink" title="举例：RRR机械手臂"></a>举例：RRR机械手臂</h2><p>这里以一个RRR机械手臂为例，分别介绍解析法中代数方法和几何方法计算IK问题。<br><img src="2.png" alt=""><br>首先我们计算出它的Transformation Matrix，如下：<br>$$<br>^0_3T=<br>\begin{bmatrix}<br>c_{123} &amp; -s_{123} &amp; 0 &amp; l_1c_1+l_2c_{12} \\<br>s_{123} &amp; c_{123} &amp; 0 &amp; l_1s_1+l_2s_{12} \\<br>0 &amp; 0 &amp; 1 &amp; 0 \\<br>0 &amp; 0 &amp; 0 &amp; 1 \\<br>\end{bmatrix}<br>$$<br>我们的目标是得到如下的Transformation Matrix：<br>$$<br>^0_3T=<br>\begin{bmatrix}<br>c_{\phi} &amp; -s_{\phi} &amp; 0 &amp; x \\<br>s_{\phi} &amp; c_{\phi} &amp; 0 &amp; y \\<br>0 &amp; 0 &amp; 1 &amp; 0 \\<br>0 &amp; 0 &amp; 0 &amp; 1 \\<br>\end{bmatrix}<br>$$</p>
-<h3 id="几何法"><a href="#几何法" class="headerlink" title="几何法"></a>几何法</h3><p>对于这样一个简单的机械手臂来说，在一些特定的点仍然会有多重解，比如下图所示，手臂到达（x,y）点可以以蓝色折线的姿态，也可以以绿色折线的姿态。计算方式就是先运用余弦定理先计算出$\theta_2$，再利用余弦定理计算出中间角$\psi$，最后算出$\theta_1$和$\theta_3$。<br><img src="3.png" alt=""><br><img src="4.png" alt=""></p>
-<h3 id="代数法"><a href="#代数法" class="headerlink" title="代数法"></a>代数法</h3><p><img src="5.png" alt=""><br><img src="6.png" alt=""><br><img src="7.png" alt=""></p>
-<h2 id="Pieper’s-Solution"><a href="#Pieper’s-Solution" class="headerlink" title="Pieper’s Solution"></a>Pieper’s Solution</h2><p>Pieper准则就是说对于6自由度的机械手臂满足以下两个条件中的一个，就会有解析解。</p>
-<ul>
-<li>三个相邻关节轴相交于一点；</li>
-<li>三个相邻关节轴相互平行。</li>
-</ul>
-<p>比如之前介绍的PUMA机械手臂，它的前三轴是用来产生移动的，后三轴是用来产生转动的，并且相交于一点，满足Pieper准则，$^0P_{6 org} = ^0P_{4 org}$<br><img src="8.png" alt=""><br>首先我们要根据最终的位置解出前三轴的角度。<br><img src="9.png" alt=""><br><img src="10.png" alt=""><br><img src="11.png" alt=""><br><img src="12.png" alt=""><br>在计算$\theta_3$时，用到了一种三角函数方程式求解的方法，如下图：<br><img src="13.png" alt=""><br>到这里，通过位置计算我们已经得到了$\theta_1，\theta_2，\theta_3$，接下来就要计算它的Orientation了。因为已经知道了$\theta_1，\theta_2，\theta_3$，所以就得到了$^0_3R$，从而推导出来$^3_6R=^0_3R^{-1}{^0_6R}$，最后我们就可以用Z—Y—Z Euler angle的方法解出$\theta_4，\theta_5，\theta_6$。但是这里要注意，我们需要把4 frame的Y轴转到5 frame的Z轴位置，这样的话5 frame对Z轴转动就相当于对4 frame的Y轴转动，然后因为4 frame的Z轴与6 frame重合，所以对6 frame的Z轴转动就相当与对4 frame的Z轴转动，但是要注意需要将4 frame转到与6 frame重合，这样就完成了Z—Y—Z的转动。这里用$\theta_4’，\theta_5’，\theta_6’$来说明用Z—Y—Z方法算出来的角度，而$\theta_4，\theta_5，\theta_6$是DH定义的角度，它们之间有一些差异。图解如下：<br><img src="14.png" alt=""><br><img src="15.png" alt=""></p>
-<h3 id="举例：物件取放任务"><a href="#举例：物件取放任务" class="headerlink" title="举例：物件取放任务"></a>举例：物件取放任务</h3><p><img src="16.png" alt=""><br><img src="17.png" alt=""><br><img src="18.png" alt=""><br><img src="19.png" alt=""><br><img src="20.png" alt=""><br><img src="21.png" alt=""><br><img src="22.png" alt=""></p>
+<h3 id="举例：一个RRR的机械手臂"><a href="#举例：一个RRR的机械手臂" class="headerlink" title="举例：一个RRR的机械手臂"></a>举例：一个RRR的机械手臂</h3><p>方法一：用三次多项式在Cartesian-space下规划路径：<br><img src="11.png" alt=""><br><img src="12.png" alt=""><br><img src="13.png" alt=""><br><img src="14.png" alt=""><br>方法二：用三次多项式在joint-space下规划路径：<br><img src="15.png" alt=""><br><img src="16.png" alt=""><br><img src="17.png" alt=""></p>
+<h2 id="高阶多项式"><a href="#高阶多项式" class="headerlink" title="高阶多项式"></a>高阶多项式</h2><p>如果我们不但要规划位置和速度，还要规划加速度的话，我们就需要用到五次多项式，而不是四次多项式。因为位置、速度和加速度分别会产生2个条件，一共有6个条件，五次多项式有6个未知数。<br><img src="18.png" alt=""></p>
 
             </div>
             <hr/>
@@ -515,7 +540,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/05/11/robot-arm-4/">http://xiaobaidiy.github.io/2020/05/11/robot-arm-4/</a>
+                    <a href="http://xiaobaidiy.github.io/2020/05/13/robot-arm-5/">http://xiaobaidiy.github.io/2020/05/13/robot-arm-5/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -553,16 +578,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E9%80%86%E5%90%91%E8%BF%90%E5%8A%A8%E5%AD%A6/">
-                                    <span class="chip bg-color">逆向运动学</span>
-                                </a>
-                            
-                                <a href="/tags/Inverse-Kinematics/">
-                                    <span class="chip bg-color">Inverse Kinematics</span>
-                                </a>
-                            
-                                <a href="/tags/Pieper-Solution/">
-                                    <span class="chip bg-color">Pieper Solution</span>
+                                <a href="/tags/%E6%9C%BA%E6%A2%B0%E6%89%8B%E8%87%82%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/">
+                                    <span class="chip bg-color">机械手臂轨迹规划</span>
                                 </a>
                             
                         </div>
@@ -607,7 +624,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-05-11T11-45-48',
+        id: '2020-05-13T12-03-03',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -631,9 +648,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/05/13/robot-arm-5/">
                     <div class="card-image">
@@ -650,9 +668,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-05-13
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-13
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -665,6 +683,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -683,23 +702,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/05/09/robot-arm-3/">
+                <a href="/2020/05/11/robot-arm-4/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/30.jpg" class="responsive-img" alt="机械手臂三--正向运动学">
+                        <img src="/medias/featureimages/30.jpg" class="responsive-img" alt="机械手臂四--逆向运动学">
                         
-                        <span class="card-title">机械手臂三--正向运动学</span>
+                        <span class="card-title">机械手臂四--逆向运动学</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍关于机械手臂控制的第三讲--正向运动学
+                            本文将介绍关于机械手臂控制的第四讲--逆向运动学
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-09
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-11
                             </span>
                         <span class="publish-author">
                             
@@ -716,16 +735,16 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%AD%A3%E5%90%91%E8%BF%90%E5%8A%A8%E5%AD%A6/">
-                        <span class="chip bg-color">正向运动学</span>
+                    <a href="/tags/%E9%80%86%E5%90%91%E8%BF%90%E5%8A%A8%E5%AD%A6/">
+                        <span class="chip bg-color">逆向运动学</span>
                     </a>
                     
-                    <a href="/tags/Forward-Kinematics/">
-                        <span class="chip bg-color">Forward Kinematics</span>
+                    <a href="/tags/Inverse-Kinematics/">
+                        <span class="chip bg-color">Inverse Kinematics</span>
                     </a>
                     
-                    <a href="/tags/DH%E8%A1%A8%E8%BE%BE%E6%B3%95/">
-                        <span class="chip bg-color">DH表达法</span>
+                    <a href="/tags/Pieper-Solution/">
+                        <span class="chip bg-color">Pieper Solution</span>
                     </a>
                     
                 </div>

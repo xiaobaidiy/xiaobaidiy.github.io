@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>机械手臂五--轨迹规划</title>
+      <link href="/2020/05/13/robot-arm-5/"/>
+      <url>/2020/05/13/robot-arm-5/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>本系列文章是以林沛群老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics1" target="_blank" rel="noopener">机器人学一</a>为参考，进行归纳整理。</p></blockquote><h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>机械手臂的轨迹规划就是说当手臂执行某一个操作时，比如说，从一个位置取某一物件然后移动到另一个位置，这段运动轨迹就需要我们来规划，规划的内容就包括位置、速度以及加速度随时间的变化。通常我们理想的轨迹都是平滑的曲线，其中包括起始点{$T_{initial}$}，很多的中间点{$T_{t_i}$}以及终点{$T_{final}$}。如果轨迹变化很大的话，那么在变化的那个点就需要手臂有很大的torque来改变运动状态，有时手臂可能做不到，而且会让整个运动过程看起来不流畅。<br><img src="1.png" alt=""></p><h1 id="轨迹规划"><a href="#轨迹规划" class="headerlink" title="轨迹规划"></a>轨迹规划</h1><p>轨迹的规划方式有两种，一种是在joint-space下进行，一种是在Cartesian-space下进行。接下来将分别介绍两种方法，以及它们的优缺点。</p><h2 id="Joint-space下的轨迹规划"><a href="#Joint-space下的轨迹规划" class="headerlink" title="Joint-space下的轨迹规划"></a>Joint-space下的轨迹规划</h2><p>在Joint-space下规划轨迹的方法如下：</p><ol><li>定义这段轨迹在空间中的起始点{$T_{initial}$}，中间点{$T_{t_i}$}以及终点{$T_{final}$}。</li><li>计算这些点的IK，得到在每个时间点$t_i$，手臂的每个joint所对应的角度。</li><li>对每一个joint都在其自己的角度坐标系下规划一条平滑的曲线。</li><li>计算FK，检查手臂末端点在Cartesian-space下轨迹的可行性（可能会碰到障碍物）。</li></ol><p>具体过程如下图：<br><img src="2.png" alt=""></p><blockquote><p>Note：<br>优点：计算量小，只需要计算起始点、中间点和终点的IK。<br>缺点：在空间中的运动轨迹不直观。</p></blockquote><h2 id="Cartesian-space下的轨迹规划"><a href="#Cartesian-space下的轨迹规划" class="headerlink" title="Cartesian-space下的轨迹规划"></a>Cartesian-space下的轨迹规划</h2><p>在Cartesian-space下规划轨迹的方法如下：</p><ol><li>定义这段轨迹在空间中的起始点{$T_{initial}$}，中间点{$T_{t_i}$}以及终点{$T_{final}$}。</li><li>对每一个手臂末端点的状态参数（$x,y,z,\theta_x,\theta_y,\theta_z$）规划一条平滑的曲线。</li><li>将规划好的手臂末端点状态的轨迹点计算IK，转换到joint-space下。</li><li>检查joint在joint-space下轨迹的可行性（有的joint的转动角度有限制或者角加速度太大手臂做不到）。</li></ol><p>具体过程如下图：<br><img src="3.png" alt=""></p><blockquote><p>Note：<br>优点：在空间中的运动轨迹比较直观。<br>缺点：计算量大，需要计算整个轨迹点的IK。</p></blockquote><h1 id="轨迹规划曲线—三次多项式"><a href="#轨迹规划曲线—三次多项式" class="headerlink" title="轨迹规划曲线—三次多项式"></a>轨迹规划曲线—三次多项式</h1><p>轨迹规划中平滑的曲线需要写成函数的形式，这样我们才能得到不同时刻的值。在这里我们用三次多项式（Cubic Polynomials）的形式来规划路径，也就是说，每两个中间点之间可以写成三次多项式的函数形式，不同轨迹区段[$t_i$ $t_{i+1}$]是不同的三次多项式。然后为了使整体的路径规划平滑，我们需要给相邻的两个区段增加限制条件，包括位置和速度（$\theta(t_i)$，$\theta(t_{i+1})$，$\dot\theta(t_i)$，$\dot\theta(t_{i+1})$）。<br><img src="4.png" alt=""></p><h2 id="解三次多项式"><a href="#解三次多项式" class="headerlink" title="解三次多项式"></a>解三次多项式</h2><ol><li><p>三次多项式的通式：<br>$$<br>\theta(\tilde t)=a_0+a_1\tilde t+a_2\tilde t^2+a_3\tilde t^3, 4\space unknown\space para: a_j \space _{j=0…3}<br>$$<br>每一个区段[$t_i$ $t_{i+1}$]都有一个这样的三次多项式，只不过每段的参数不同。</p></li><li><p>$\tilde t$的取值：<br>对每一个区段：$t\in[t_i,t_{i+1}]$<br>$\tilde t=t-t_i$，所以$\tilde t|_{t=t_i}=0$</p></li><li><p>增加边界条件：<br>首先当$t=t_i$和$t=t_{i+1}$时，这个三次多项式函数需要落在$\theta_i$和$\theta_{i+1}$上，所以有：<br>$$<br>\begin{aligned}<br>&amp;\theta(\tilde t|_{t=t_i})=\theta_i=\color{red}{a_0} \\<br>&amp;\theta(\tilde t|_{t=t_{i+1} })=\theta_{i+1}=a_0+a_1\Delta t+a_2\Delta t^2+a_3\Delta t^3 \\<br>\end{aligned}<br>$$<br>然后这个三次多项式函数在$t=t_i$和$t=t_{i+1}$时的速度也需要我们来设计，所以有：<br>$$<br>\begin{aligned}<br>&amp;\dot \theta(\tilde t|_{t=t_i})=\dot \theta_i=\color{red}{a_1} \\<br>&amp;\dot \theta(\tilde t|_{t=t_{i+1} })=\dot \theta_{i+1}=a_1+2a_2\Delta t+3a_4\Delta t^2 \\<br>\end{aligned}<br>$$</p></li><li><p>联立上面4个方程式最后解出：<br>$$<br>\begin{aligned}<br>&amp;\color{red}{a_2} = \frac{3}{\Delta t^2}(\theta_{i+1}-\theta_i)-\frac{2}{\Delta t}\dot \theta_i-\frac{1}{\Delta t}\dot \theta_{i+1} \\<br>&amp;\color{red}{a_3} = -\frac{2}{\Delta t^3}(\theta_{i+1}-\theta_i)+\frac{1}{\Delta t^2}(\dot \theta_{i+1}+\dot \theta_i)<br>\end{aligned}<br>$$</p></li><li><p>用Matrix的方式计算：<br><img src="5.png" alt=""></p></li></ol><h2 id="多段三次多项式"><a href="#多段三次多项式" class="headerlink" title="多段三次多项式"></a>多段三次多项式</h2><p>在上面的计算中，我们需要设计在边界的速度条件$\dot \theta_i$和$\dot \theta_{i+1}$，那么我们该如何设计呢？</p><ol><li>自己定义。不建议用这个方法，这样会使我们整个路径规划变得很复杂。</li><li>自动生成：<br>如果$\dot \theta_i$在$t_i$前后变号，那么$\dot \theta_i$就取0；<br>如果$\dot \theta_i$在$t_i$前后同号，那么$\dot \theta_i$就取前后两段速度的平均数；<br><img src="6.png" alt=""></li></ol><h3 id="举例：有一个中间点的路径规划"><a href="#举例：有一个中间点的路径规划" class="headerlink" title="举例：有一个中间点的路径规划"></a>举例：有一个中间点的路径规划</h3><p><img src="7.png" alt=""><br><img src="8.png" alt=""><br><img src="9.png" alt=""><br><img src="10.png" alt=""></p><h2 id="多段三次多项式通解"><a href="#多段三次多项式通解" class="headerlink" title="多段三次多项式通解"></a>多段三次多项式通解</h2><p>假设一共有N+1个点，其中有1个初始点，N-1个中间点和1个终点。那么我们一共就有N个三次多项式，每个三次多项式有4个未知参数，所以一共有4N个未知量。为了求解这4N个未知量，我们就需要4N个限制条件：</p><ul><li>每一段会有两个位置条件，所以一共有2N个位置条件；</li><li>每一个中间点会有一个速度条件和一个加速度条件，所以一共有2（N-1）个速度和加速度条件；</li><li>目前为止一共有4N-2个条件，那么最后两个条件我们可以限制起始点和终点点的速度或者是加速度，这样就有4N个条件了。</li></ul><h3 id="举例：一个RRR的机械手臂"><a href="#举例：一个RRR的机械手臂" class="headerlink" title="举例：一个RRR的机械手臂"></a>举例：一个RRR的机械手臂</h3><p>方法一：用三次多项式在Cartesian-space下规划路径：<br><img src="11.png" alt=""><br><img src="12.png" alt=""><br><img src="13.png" alt=""><br><img src="14.png" alt=""><br>方法二：用三次多项式在joint-space下规划路径：<br><img src="15.png" alt=""><br><img src="16.png" alt=""><br><img src="17.png" alt=""></p><h2 id="高阶多项式"><a href="#高阶多项式" class="headerlink" title="高阶多项式"></a>高阶多项式</h2><p>如果我们不但要规划位置和速度，还要规划加速度的话，我们就需要用到五次多项式，而不是四次多项式。因为位置、速度和加速度分别会产生2个条件，一共有6个条件，五次多项式有6个未知数。<br><img src="18.png" alt=""></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 机械手臂 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 机械手臂轨迹规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>机械手臂四--逆向运动学</title>
       <link href="/2020/05/11/robot-arm-4/"/>
       <url>/2020/05/11/robot-arm-4/</url>
