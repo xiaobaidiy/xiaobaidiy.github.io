@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>机械手臂六--线性与二次方程搭配的轨迹规划曲线</title>
+      <link href="/2020/05/13/robot-arm-6/"/>
+      <url>/2020/05/13/robot-arm-6/</url>
+      
+        <content type="html"><![CDATA[<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>上一讲中我们介绍了一种用三次多项式的方式来规划轨迹曲线的方式，但是在很多实际任务中我们需要用到直线轨迹。但是如果单纯的使用直线轨迹，那么在两段之间的中间点处速度是不连续的，为了解决这个问题，我们把直线两端修改为二次方程式，从而让速度变得平滑，如下图：<br><img src="1.png" alt=""></p><h1 id="规划方式"><a href="#规划方式" class="headerlink" title="规划方式"></a>规划方式</h1><p>规划的方式分为两段，直线段和二次多项式段：</p><ul><li>Linear段，是匀速的：<br>$$<br>\dot \theta=\frac{\theta_h-\theta_b}{t_h-t_b}=\dot \theta_{t_b}<br>$$</li><li>Parabolic段，是等加速的：<br>$$<br>\begin{aligned}<br>&amp;\theta(t)=\theta_0+\dot \theta_0t+\frac{1}{2}\color{red}{\ddot \theta}t^2 （这个是等加速度的位移公式）\\<br>&amp;\dot \theta(t)=\dot \theta_0+\color{red}{\ddot \theta}t \\<br>&amp;\dot \theta(t_b)=\color{red}{\ddot \theta}t_b（assume \space \dot \theta_0=0） \\<br>\end{aligned}<br>$$<br><img src="2.png" alt=""><br>因为直线段和二次多项式段的交界处的速度需要一样，所以可以得到如下结论：<br><img src="3.png" alt=""></li></ul><h2 id="对加速度-ddot-theta-的讨论"><a href="#对加速度-ddot-theta-的讨论" class="headerlink" title="对加速度$\ddot \theta$的讨论"></a>对加速度$\ddot \theta$的讨论</h2><p><img src="4.png" alt=""></p><h2 id="三种方式的比较"><a href="#三种方式的比较" class="headerlink" title="三种方式的比较"></a>三种方式的比较</h2><p><img src="5.png" alt=""></p><h1 id="多段Linear-Function-with-Parabolic-Blends"><a href="#多段Linear-Function-with-Parabolic-Blends" class="headerlink" title="多段Linear Function with Parabolic Blends"></a>多段Linear Function with Parabolic Blends</h1><p>假设，有一个路径规划，其中有n个中间点，然后用Linear Function with Parabolic Blends的方法将各个点串起来，但是实际的轨迹并没有经过中间点（黑色实线），如下图所示：<br><img src="6.png" alt=""></p><ul><li>轨迹中间线段$[\theta_i \space \theta_{i+1}]$的计算方式：<br><img src="7.png" alt=""></li><li>轨迹第一段的计算方法：<br>前面我们说过实际的轨迹并没有经过中间点，但是起始位置是必须要经过的，所以我们不能用计算中间线段的方式来计算起始点。这里假设起始位置速度为0，然后我们可以在$\theta_0$的后面插入一个假设的中间点$\theta_1$，并且它的位置是二次多项式所需时间$t_1$的一半（$t_{\theta_1}=\frac{1}{2}t_1$）。然后用以下方式计算：<br><img src="8.png" alt=""></li><li>轨迹最后一段的计算方法：<br>最后一段和第一段一样，假设最后速度为0，在$\theta_f$点前插入一个假设的中间点$\theta_n$，并且它的位置是二次多项式所需时间$t_n$的一半（$t_{\theta_n}=\frac{1}{2}t_n$）。然后用以下方式计算：<br><img src="9.png" alt=""></li></ul><h2 id="举例：一个RRR手臂"><a href="#举例：一个RRR手臂" class="headerlink" title="举例：一个RRR手臂"></a>举例：一个RRR手臂</h2><p><img src="10.png" alt=""><br><img src="11.png" alt=""><br><img src="12.png" alt=""><br><img src="13.png" alt=""></p><h1 id="多段Linear-Function-with-Parabolic-Blends的讨论"><a href="#多段Linear-Function-with-Parabolic-Blends的讨论" class="headerlink" title="多段Linear Function with Parabolic Blends的讨论"></a>多段Linear Function with Parabolic Blends的讨论</h1><ol><li>在真实系统中可以达到的加速度$\ddot \theta$取决于很多因素：<ul><li>电机的规格</li><li>手臂的姿态：手臂在不同状态下，各个joint所需要承受的torque不同。</li><li>手臂的动作状态：手臂在不同运行状态下，各个joint所需要承受的惯性力不同。</li></ul></li><li>路径规划没有通过中间点的解决方法：在原本的via points两边插入pseudo via points（橘色的点），让原本的via points落在linear段上，这样就会通过，如下图：<br><img src="14.png" alt=""></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 机械手臂 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 机械手臂线性轨迹规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>机械手臂五--轨迹规划</title>
       <link href="/2020/05/13/robot-arm-5/"/>
       <url>/2020/05/13/robot-arm-5/</url>
