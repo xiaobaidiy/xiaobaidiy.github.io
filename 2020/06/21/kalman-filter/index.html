@@ -453,7 +453,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.2k
+                    2.5k
                 </div>
                 
 
@@ -479,6 +479,8 @@
 <p>现在唯一的问题就是反馈增益$K_k$该如何决定。对于KF来说，它是动态的对$K_k$进行更改，当上一时刻得出的最优值更靠近预测值时，那么这一时刻它就更相信预测值，反之亦然。接下来我们来看KF的计算过程，首先是根据上一时刻系统的状态通过数学模型进行预测：<br>$$<br>\begin{aligned}<br>&amp;\hat x_k^-=A\hat x_{k-1}+Bu_k \\<br>&amp;P_k^- = AP_{k-1}A^T+Q<br>\end{aligned}<br>$$<br>$P_k^-$是$\hat x_k^-$的协方差，因此通过这一步我们就得到了预估状态的概率分布函数。接下来就要更新增益$K_k$，然后计算出最优估计值$\hat x_k$以及它的方差$P_k$：<br>$$<br>\begin{aligned}<br>&amp;K_k=\frac {P_k^-C^T}{CP_k^-C^T+R} \\<br>&amp;\hat x_k = \hat x_k^-+K_k(y_k-C\hat x_k^-) \\<br>&amp;P_k=(1-K_kC)P_k^-<br>\end{aligned}<br>$$<br><img src="9.png" alt=""><br>在这里我们讨论一下$K_k$的取值，当$P_k^-$等于0时，也就是说预测值$\hat x_k^-$的方差为0，所以它是100%可以被相信的，此时$K_k$等于0，最后就可以得到$\hat x_k=\hat x_k^-$，最优估计值就是预测值。反之，当$R$等于0时，也就是说测量值的方差为0，那么测量值就是100%可以被相信的，此时$K_k$等于$C^{-1}$，最后就可以得到$\hat x_k=y_k$。</p>
 <p>KF也可以被用来做传感器融合，接着上述例子，为了增加测量的准确性，我们给车子又增加了传感器IMU，这时测量值就会变成一个2x1的向量，计算过程如下图：<br><img src="10.png" alt=""></p>
 <p>将KF简单总结一下，首先它会通过一种方式将预测值和测量值进行融合，然后将这个结果作为这个时刻的最优解，然后判断这个最优解越靠近谁，在下个时刻就会给谁更多的权重就越相信谁。</p>
+<h1 id="扩展卡尔曼滤波器"><a href="#扩展卡尔曼滤波器" class="headerlink" title="扩展卡尔曼滤波器"></a>扩展卡尔曼滤波器</h1><p>卡尔曼滤波器可以为线性系统提供最优的估计值，但是对于非线性系统则不适用。对于非线性系统，我们需要将系统近似转化为线性系统后再进行计算，这个就是扩展卡尔曼滤波器（Extended Kalman Filter，即EKF）。当系统是非线性时，系统状态方程则写为如下形式：<br>$$<br>\begin{aligned}<br>&amp;x_k=f(x_{k-1},u_k)+w_k \\<br>&amp;y_k=g(x_k)+v_k<br>\end{aligned}<br>$$<br>其中$f(x_{k-1},u_k)$和$g(x_k)$都是非线性函数。</p>
+<p>接下来我们需要求出方程$f$和$g$的Jacobian矩阵，也就是它们对$x$的偏导数：<br>$$<br>\begin{aligned}<br>&amp;F=\frac {\partial f}{\partial x}|_{\hat x_{k-1},u_k} \\<br>&amp;G=\frac {\partial g}{\partial x}|_{\hat x_k}<br>\end{aligned}<br>$$<br>被线性化处理的系统就变成了这样:<br>$$<br>\begin{aligned}<br>&amp;\Delta x_k \approx F\Delta x_{k-1}+w_k \\<br>&amp;\Delta y_k \approx G\Delta x_k+v_k<br>\end{aligned}<br>$$<br>接下来计算EKF的过程就和KF一样了，先是进行预测：<br>$$<br>\begin{aligned}<br>&amp;\hat x_k^-=f(\hat x_{k-1},u_k) \\<br>&amp;P_k^- = FP_{k-1}F^T+Q<br>\end{aligned}<br>$$<br>然后再更新：<br>$$<br>\begin{aligned}<br>&amp;K_k=\frac {P_k^-G^T}{GP_k^-G^T+R} \\<br>&amp;\hat x_k = \hat x_k^-+K_k(y_k-g(\hat x_k^-)) \\<br>&amp;P_k=(1-K_kG)P_k^-<br>\end{aligned}<br>$$<br><img src="11.png" alt=""></p>
 
             </div>
             <hr/>
