@@ -4,6 +4,37 @@
   
     
     <entry>
+      <title>卡尔曼滤波器计算无人机姿态</title>
+      <link href="/2020/06/24/kalman-filter-imu-sensor-fusion/"/>
+      <url>/2020/06/24/kalman-filter-imu-sensor-fusion/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>参考资料：<a href="https://d1.amobbs.com/bbs_upload782111/files_50/ourdev_711905ORLKPP.pdf" target="_blank" rel="noopener">基于陀螺仪及加速度计信号融合的姿态角度测量</a></p></blockquote><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在上一篇介绍卡尔曼滤波器的文章中说到，对于无人机的姿态计算，我们不能单独的用陀螺仪或者是加速度计来进行测量，而是需要将它们俩进行融合，那么这一讲我们就来看看如何用卡尔曼滤波器进行滤波融合。</p><h1 id="卡尔曼滤波融合过程"><a href="#卡尔曼滤波融合过程" class="headerlink" title="卡尔曼滤波融合过程"></a>卡尔曼滤波融合过程</h1><p>首先建立系统的状态方程和测量方程：<br><img src="1.png" alt=""><br>式中，$\varphi$是系统的真实角度，$b$是陀螺仪的零点偏移量，$\omega_{gyro}$为包含固定偏差的陀螺仪输出角速度，$\varphi_{acce}$为加速度计经处理后得到的角度值，$w_g$为陀螺仪测量噪声，$w_a$为加速度计测量噪声，$w_g$和$w_a$相互独立，此处假设二者为满足正态分布的白色噪声，令$T_s$为系统采样周期，得到离散系统的状态方程和测量方程：<br><img src="2.png" alt=""><br>并且系统过程噪声协方差矩阵$Q$以及测量误差的协方差矩阵$R$为：<br><img src="3.png" alt=""><br>式中，q_acce和q_gyro分别是加速度计和陀螺仪测量的协方差，其数值代表卡尔曼滤波器对其传感器数据的信任程度，值越小，表明信任程度越高。在该系统中陀螺仪的值更为接近准确值，因此取q_gyro的值小于q_acce的值。</p><p>此时，对应上一篇所介绍的卡尔曼滤波器的计算过程，我们现在已经知道了矩阵$A=\begin{bmatrix}1&amp;-T_s\\0&amp;1\end{bmatrix}$， 矩阵$B=\begin{bmatrix}T_s\\0\end{bmatrix}$，接下来我们只要给定一个初始化的系统状态$\hat x_0$以及它的方差$P_0$，还有干扰的协方差$Q$和$R$就可以带入公式计算了，具体计算过程请参考上一篇。下图是参考资料里用到的初始化参数，可以做一个参考：<br><img src="4.png" alt=""></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 无人机 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Kalman Filter </tag>
+            
+            <tag> 卡尔曼滤波器 </tag>
+            
+            <tag> sensor fusion </tag>
+            
+            <tag> 无人机姿态 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>卡尔曼滤波器</title>
       <link href="/2020/06/21/kalman-filter/"/>
       <url>/2020/06/21/kalman-filter/</url>
