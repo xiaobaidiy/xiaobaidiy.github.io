@@ -453,7 +453,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.8k
+                    2k
                 </div>
                 
 
@@ -480,7 +480,7 @@
 </blockquote>
 <p>当我们已知旋转矩阵R时，怎么反推出来旋转的角度呢？根据$r_{31}$元素的值我们可以直接算出$\beta$角，然而$\beta$角的取值会有如下三种情况：<br>如果$\beta \neq \pm90^\circ$：<br>$$<br>\begin{aligned}<br>\beta &amp;= Atan2(-r_{31}, \sqrt{r_{11} ^2 + r_{21} ^2}) \\<br>\alpha &amp;= Atan2(r_{21}/c\beta, r_{11}/c\beta) \\<br>\gamma &amp;= Atan2(r_{32}/c\beta, r_{33}/c\beta)<br>\end{aligned}<br>$$<br>如果$\beta = 90^\circ$：<br>$$<br>\begin{aligned}<br>&amp;\alpha = 0^\circ \\<br>&amp;\gamma = Atan2(r_{12},r_{22})<br>\end{aligned}<br>$$<br>如果$\beta = -90^\circ$：<br>$$<br>\begin{aligned}<br>&amp;\alpha = 0^\circ \\<br>&amp;\gamma = -Atan2(r_{12},r_{22})<br>\end{aligned}<br>$$</p>
 <blockquote>
-<p>Note: 当$\beta \neq \pm90^\circ$时，$\alpha$和$\gamma$其实有多组解，这里我们给$\alpha$取$0^\circ$是为了方便计算</p>
+<p>Note: 当$\beta \neq \pm90^\circ$时，就发生了欧拉旋转的万向锁问题。这个问题在欧拉旋转中总是会发生，无论是Fixed angles还是Eular angls，无论是X-Y-Z，Y-X-Z，Z-Y-X等等所有旋转都会发生。根据图示可以更好的理解，当第二次旋转为$\pm90^\circ$时，第三次要旋转的轴一定就是第一次旋转的轴，这样的话就会导致损失一个自由度，所以直接给第一次旋转的角度$\alpha$赋值为0，放弃这个自由度，但是计算结果是正确的。</p>
 </blockquote>
 <h2 id="Euler-angles（Z-Y-X）"><a href="#Euler-angles（Z-Y-X）" class="headerlink" title="Euler angles（Z-Y-X）"></a>Euler angles（Z-Y-X）</h2><p>如下图所示，A frame是我们即将要旋转的坐标系，首先我们先沿着$\hat{Z}$轴旋转$\alpha$角度，再沿着旋转之后的坐标系的$\hat{Y}$轴旋转$\beta$角度，最后再沿着$\hat{X}$轴旋转$\gamma$角度得到了B frame。<br><img src="2.png" alt=""><br>旋转矩阵的计算方式如下：<br>$$<br>\begin{aligned}<br>&amp;^A_BR_{ZYX}(\alpha,\beta,\gamma) =<br>R_Z(\alpha)R_Y(\beta)R_X(\gamma) \\<br>&amp;=    \begin{bmatrix}<br>    c\alpha c\beta &amp; c\alpha s\beta s\gamma - s\alpha c\gamma &amp; c\alpha s\beta c\gamma + s\alpha s\gamma \\<br>    s\alpha c\beta &amp; s\alpha s\beta s\gamma + c\alpha c\gamma &amp; s\alpha s\beta c\gamma - c\alpha s\gamma \\<br>    -s\beta &amp; c\beta s\gamma &amp; c\beta c\gamma<br>    \end{bmatrix} \\<br>&amp;= \begin{bmatrix}<br>r_{11} &amp; r_{12} &amp; r_{13}  \\<br>r_{21} &amp; r_{22} &amp; r_{23}  \\<br>r_{31} &amp; r_{32} &amp; r_{33}  \\<br>\end{bmatrix}<br>\end{aligned}<br>$$</p>
 <blockquote>
