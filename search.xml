@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>四旋翼二--系统设计</title>
+      <link href="/2020/07/19/uav-2/"/>
+      <url>/2020/07/19/uav-2/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>本系列文章是以Vijay Kumar老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-flight/home/welcome" target="_blank" rel="noopener">Robotics: Aerial Robotics</a>为参考，进行归纳整理。</p></blockquote><h1 id="基础力学结构"><a href="#基础力学结构" class="headerlink" title="基础力学结构"></a>基础力学结构</h1><h2 id="电机物理性质"><a href="#电机物理性质" class="headerlink" title="电机物理性质"></a>电机物理性质</h2><p>$\tau$与$w$的关系是电机本身的特性，当$\tau$到达与drag相交的那个点时，电机的转速达到最大，那么这个转速$w_0$对应的$F$就至少要大于等于1/4mg才能使飞机克服重力飞起来。阻力drag包括了电机的反电磁阻力和空气阻力等，并且它阻力大小与桨叶也有关。<br><img src="1.png" alt=""></p><h2 id="基础力学（悬停）"><a href="#基础力学（悬停）" class="headerlink" title="基础力学（悬停）"></a>基础力学（悬停）</h2><p>受力分析如下图所示，$\mathbf {a_1}$，$\mathbf  {a_2}$，$\mathbf  {a_3}$为inertial frame，$\mathbf  {b_1}$，$\mathbf  {b_2}$，$\mathbf  {b_3}$为body frame，$F$是电机产生的推力，$M$是电机产生的反力矩。<br><img src="2.png" alt=""><br>合外力为：<br>$$<br>\mathbf F=\mathbf F_1+\mathbf  F_2+\mathbf  F_3+\mathbf  F_4-mg\mathbf  a_3<br>$$<br>合力矩包括电机带动螺旋桨所产生的反力矩，这是yaw力矩，以及电机产生的向上的升力所产生的roll，pitch力矩。<br>$$<br>\mathbf M= \mathbf r_1\times \mathbf F_1 + \mathbf r_2\times \mathbf F_2 + \mathbf r_2\times \mathbf F_2 + \mathbf r_3\times \mathbf F_3 + \mathbf r_4\times \mathbf F_4 \\ + \mathbf M_1 + \mathbf M_2 + \mathbf M_3 + \mathbf M_4<br>$$</p><h2 id="垂直方向加减速"><a href="#垂直方向加减速" class="headerlink" title="垂直方向加减速"></a>垂直方向加减速</h2><p><img src="3.png" alt=""></p><h1 id="动力学和一维线性控制"><a href="#动力学和一维线性控制" class="headerlink" title="动力学和一维线性控制"></a>动力学和一维线性控制</h1><p>假设有一个UAV只可以上下移动，那么该如何控制它呢？<br><img src="4.png" alt=""></p><h2 id="高度控制"><a href="#高度控制" class="headerlink" title="高度控制"></a>高度控制</h2><p>垂直方向加减速方程式为：<br>$$<br>\sum_{i=1}^4 k_Fw_i^2+m\mathbf g=m\mathbf a \\<br>\mathbf a=\frac{d^2x}{dt^2}=\ddot x<br>$$<br>将加速度$\mathbf a$设为输入$u$，那么$u=\ddot x$，这是一个二阶系统，系统方程可写为：<br>$$<br>u=\frac {1}{m}[\sum_{i=1}^4 k_Fw_i^2+m\mathbf g]<br>$$</p><h2 id="控制一个二阶线性系统"><a href="#控制一个二阶线性系统" class="headerlink" title="控制一个二阶线性系统"></a>控制一个二阶线性系统</h2><ol><li>问题：<br>状态，输入：$x,u\in \mathbb R$<br>系统模型：$\ddot x=u$<br>想要$x$跟随设计的线路$x^{des}(t)$</li><li>方法：<br>定义误差$e(t)=x^{des}(t)-x(t)$<br>想要$e(t)$收敛到0</li><li>策略：<br>从下式中得到$u$:<br>$$<br>\begin{aligned}<br>&amp;\ddot e+K_v\dot e+K_pe=0 \qquad K_p,K_v&gt;0 \\<br>&amp;(PD控制)u(t)=\ddot x^{dex}(t)+K_v\dot e(t)+K_pe(t) \\<br>&amp;(PID控制)u(t)=\ddot x^{dex}(t)+K_v\dot e(t)+K_pe(t)+K_i\int_0^t e(\tau) d\tau<br>\end{aligned}<br>$$<br>在有干扰（比如风）以及系统建模的时候有错误时（比如有的质量不知道）就经常会用PID控制。</li></ol><h1 id="设计考量"><a href="#设计考量" class="headerlink" title="设计考量"></a>设计考量</h1><p>在系统设计时我们需要考虑到系统的限制，比如最大推力，最大加速度，功率限制等等。那么，在有最大推力限制的情况下，系统控制方程如下所示：<br><img src="5.png" alt=""></p><h1 id="机动性"><a href="#机动性" class="headerlink" title="机动性"></a>机动性</h1><p>判断四旋翼的机动性有两个方面，一方面是在一定的初速度下能够停下来的距离越短机动性越好，另一方面是在某一速度下飞行的四旋翼转弯的曲率越小机动性越好。第一种情况如下图所示，需要注意的是为了有最大的减速度，要将大部分推力用于减速，因此四旋翼的高度会掉下来。<br><img src="6.png" alt=""><br>第二种情况如下图所示，要尽量减小$\rho$：<br><img src="7.png" alt=""></p><h2 id="四旋翼在平面的受力分析"><a href="#四旋翼在平面的受力分析" class="headerlink" title="四旋翼在平面的受力分析"></a>四旋翼在平面的受力分析</h2><p>推力$u_1$和转矩$u_2$是系统的两个控制量。<br><img src="8.png" alt=""></p><h1 id="通信结构"><a href="#通信结构" class="headerlink" title="通信结构"></a>通信结构</h1><p><img src="9.png" alt=""></p><h1 id="尺寸的影响"><a href="#尺寸的影响" class="headerlink" title="尺寸的影响"></a>尺寸的影响</h1><p>四旋翼的简易结构如下图所示，通常有$r\approx \frac{1}{2}l$，所以有$r\sim l$。<br><img src="10.png" alt=""></p><ol><li>质量，转动惯量<br>物体的质量与体积有关，所以得到$m\sim l^3$，转动惯量$I$又等于$ml^2$，所以推得$I\sim l^5$</li><li>推力<br>$$<br>\begin{aligned}<br>&amp;F\sim \pi r^2\times(wr)^2=\pi r^2v^2 \\<br>&amp;\Rightarrow F \sim l^2v^2 \\<br>&amp;\because a \sim \frac{F}{m}，m\sim l^3 \\<br>&amp; \therefore a \sim \frac{v^2}{l}<br>\end{aligned}<br>$$</li><li>力矩<br>$$<br>\begin{aligned}<br>&amp;M\sim Fl \Rightarrow M \sim l^3v^2 \\<br>&amp;\because \alpha \sim \frac{M}{I}，I\sim l^5 \\<br>&amp;\therefore \alpha \sim \frac {v^2}{l^2}<br>\end{aligned}<br>$$</li></ol><h2 id="实验结论"><a href="#实验结论" class="headerlink" title="实验结论"></a>实验结论</h2><p>经过实验得出了速度$v$与四旋翼大小$l$之间的关系有两种，无论是哪一种关系，都有这个结论，越小的四旋翼机动性越高。</p><ol><li>Froude scaling<br>这个结论更适用于小型的四旋翼：<br>$$<br>\begin{aligned}<br>&amp;v\sim \sqrt{l}，F\sim l^3 \\<br>&amp;\Rightarrow  a\sim 1， \alpha \sim \frac{1}{l}<br>\end{aligned}<br>$$</li><li>Mach scaling<br>$$<br>\begin{aligned}<br>&amp;v\sim 1，F\sim l^2 \\<br>&amp;\Rightarrow  a\sim \frac{1}{l}， \alpha \sim \frac{1}{l^2}<br>\end{aligned}<br>$$</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 无人机 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Drone </tag>
+            
+            <tag> 四旋翼 </tag>
+            
+            <tag> 无人机 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>四旋翼一--介绍</title>
       <link href="/2020/07/19/uav-1/"/>
       <url>/2020/07/19/uav-1/</url>
