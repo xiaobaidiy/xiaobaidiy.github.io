@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="四旋翼一--介绍, “Robot”">
+    <meta name="keywords" content="四旋翼三--四旋翼运动学, “Robot”">
     <meta name="description" content="欢乐搞机">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>四旋翼一--介绍 | XiaoBai Robot</title>
+    <title>四旋翼三--四旋翼运动学 | XiaoBai Robot</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -304,7 +304,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">四旋翼一--介绍</h1>
+                    <h1 class="description center-align post-title">四旋翼三--四旋翼运动学</h1>
                 </div>
             </div>
         </div>
@@ -448,7 +448,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-19
+                    2020-07-24
                 </div>
                 
 
@@ -457,7 +457,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    298
+                    810
                 </div>
                 
 
@@ -472,15 +472,18 @@
                 <blockquote>
 <p>本系列文章是以Vijay Kumar老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-flight/home/welcome" target="_blank" rel="noopener">Robotics: Aerial Robotics</a>为参考，进行归纳整理。</p>
 </blockquote>
-<h1 id="四旋翼的结构"><a href="#四旋翼的结构" class="headerlink" title="四旋翼的结构"></a>四旋翼的结构</h1><p>四旋翼的结构如下图所示：<br><img src="1.png" alt=""><br>每个电机相对的那个电机旋转方向是相同的，而相邻的电机旋转方向是相反的，这样是为了抵消电机所产生的反力矩。通过控制四个电机的速度就可以控制UAV的位置和方向。</p>
-<h1 id="自动化飞行的重要部分"><a href="#自动化飞行的重要部分" class="headerlink" title="自动化飞行的重要部分"></a>自动化飞行的重要部分</h1><p>在任何系统中，为了实现自动化控制，需要知道以下四个部分该如何实现：</p>
-<ol>
-<li>状态估计 – 估计UAV的位置和速度（包括旋转速度和角速度）</li>
-<li>控制 – 控制电机并且正确的执行从而得到所期望的状态。</li>
-<li>地图 – 有能力绘制周围环境的地图</li>
-<li>规划 – 可以计算规划一个路径</li>
-</ol>
-<p>在室外我们可以使用GPS来定位并且导航，但是在室内就需要用到SLAM（Simultaneous Localization And Mapping）来定位并且绘制地图。如下图，如果机器人可以估计$d_1$，$d_2$，$d_3$，$d_1’$，$d_2’$，$d_3’$和$\Delta x$，那么就可以应用SLAM。<br><img src="2.png" alt=""></p>
+<p>关于旋转矩阵，欧拉角这部分内容可以看我之前的文章，这里做一些补充说明。</p>
+<h1 id="旋转矩阵的性质"><a href="#旋转矩阵的性质" class="headerlink" title="旋转矩阵的性质"></a>旋转矩阵的性质</h1><ul>
+<li>正交矩阵，即$RR^T=RR^{-1}=I$</li>
+<li>行列式等于+1</li>
+<li>任意两个旋转矩阵相乘依然是旋转矩阵</li>
+<li>旋转矩阵的逆矩阵仍然是旋转矩阵</li>
+</ul>
+<h1 id="沿任意向量旋转的旋转矩阵"><a href="#沿任意向量旋转的旋转矩阵" class="headerlink" title="沿任意向量旋转的旋转矩阵"></a>沿任意向量旋转的旋转矩阵</h1><h2 id="叉乘转换"><a href="#叉乘转换" class="headerlink" title="叉乘转换"></a>叉乘转换</h2><p>两个向量叉乘可以写成一个矩阵和一个向量点乘的形式，如下：<br>$$<br>\begin{bmatrix}<br>a_1 \\ a_2 \\ a_3<br>\end{bmatrix} \times \begin{bmatrix}<br>b_1 \\ b_2 \\ b_3<br>\end{bmatrix} = \begin{bmatrix}<br>a_2b_3-a_3b_2 \\ a_3b_1-a_1b_3 \\ -a_2b_1+a_1b_2<br>\end{bmatrix} = \begin{bmatrix}<br>0&amp;-a_3&amp;a_2 \\ a_3&amp;0&amp;-a_1 \\ -a_2&amp;a_1&amp;0<br>\end{bmatrix}\begin{bmatrix}<br>b_1 \\ b_2 \\ b_3<br>\end{bmatrix}<br>$$为了以示区别，将那个展开的矩阵写为$\hat a$，所有就有了：<br>$$<br>\vec a \times \vec b = \hat a \vec b<br>$$</p>
+<h2 id="沿任意向量旋转"><a href="#沿任意向量旋转" class="headerlink" title="沿任意向量旋转"></a>沿任意向量旋转</h2><p>沿任意向量旋转的旋转矩阵如下，其中$u$是旋转轴，$\phi$是旋转角度。<br>$$<br>Rot(u,\phi) = Icos\phi+uu^T(1-cos\phi)+\hat usin\phi<br>$$</p>
+<h1 id="旋转以及角速度"><a href="#旋转以及角速度" class="headerlink" title="旋转以及角速度"></a>旋转以及角速度</h1><h2 id="旋转矩阵的导数"><a href="#旋转矩阵的导数" class="headerlink" title="旋转矩阵的导数"></a>旋转矩阵的导数</h2><p>已知有一个旋转矩阵$R(t)$，因为它是正交矩阵所以有：<br>$$<br>R^T(t)R(t)=I \\<br>R(t)R(t)^T=I<br>$$<br>对它进行求导后得到：<br>$$<br>\dot R^TR+R^T\dot R=0 \\<br>R\dot R^T+\dot RR^T=0<br>$$其中$R^T\dot R$和$\dot RR^T$是斜对称矩阵，所以它们就可以转换为一个向量叉乘的形式。</p>
+<h2 id="旋转的角速度"><a href="#旋转的角速度" class="headerlink" title="旋转的角速度"></a>旋转的角速度</h2><p>假设刚体上有一点$p$经过旋转之后变成了点$q$，那么它们俩之间的关系可以写成$q(t)=R(t)p$，对两边同时求导就得到了$\dot q=\dot Rp$，其中$p$是在body frame下的位置，$\dot q$是在inertial frame下的速度。经过转换我们可以得到以下两个式子：<br>$$<br>\begin{aligned}<br>&amp;R^T\dot q=R^T\dot Rp \\<br>&amp;\dot q=\dot RR^Tq<br>\end{aligned}<br>$$在第一个式子中，点$p$左乘$R^T\dot R$后就得到了它在body frame下的速度，因此可以将$R^T\dot R$看作一个角速度记为$\hat w^b$，用来得到在body frame下某个点的速度。在第二个式子中，点$q$左乘$\dot RR^T$后就得到了它在inertial frame下的速度，因此可以将$\dot RR^T$看作一个角速度记为$\hat w^s$，用来得到在inertial frame下某个点的速度。</p>
+<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><p>如下图，点$p=[1,0,0]^T$绕z轴旋转到点$q=[0,1,0]^T$，求出在inertial frame和body frame的速度。<br><img src="1.png" alt=""><br>首先我们算出$\hat w^b$和$\hat w^s$如下：<br><img src="2.png" alt=""><br>在转动的过程中$q$点的坐标为$[cos\theta, sin\theta,0]^T$，可以得到在inertial frame的速度为：<br>$$<br>\begin{aligned}<br>\dot q&amp;=\dot RR^Tq \\<br>&amp;=\begin{bmatrix}<br>-sin\theta \\ cos\theta \\ 0<br>\end{bmatrix}\dot \theta<br>\end{aligned}<br>$$而在body frame里，因为刚体自身坐标系会随着刚体转动，所以点$p$的速度方向相当于点$q$在$\theta=0$时的方向，通过计算也可以得到答案：<br>$$<br>\begin{aligned}<br>R^T\dot q &amp;=R^T\dot Rp \\<br>&amp;=\begin{bmatrix}<br>0 \\ 1 \\0<br>\end{bmatrix} \dot \theta<br>\end{aligned}<br>$$</p>
 
             </div>
             <hr/>
@@ -506,7 +509,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/07/19/uav-1/">http://xiaobaidiy.github.io/2020/07/19/uav-1/</a>
+                    <a href="http://xiaobaidiy.github.io/2020/07/24/uav-3/">http://xiaobaidiy.github.io/2020/07/24/uav-3/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -598,7 +601,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-07-19T20-49-03',
+        id: '2020-07-24T21-26-37',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -622,28 +625,29 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/07/19/uav-2/">
+                <a href="/2020/07/24/uav-3/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼二--系统设计">
+                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼三--四旋翼运动学">
                         
-                        <span class="card-title">四旋翼二--系统设计</span>
+                        <span class="card-title">四旋翼三--四旋翼运动学</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍无人机的系统设计
+                            本文将介绍无人机的系统运动学
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-24
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -656,6 +660,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -682,23 +687,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/06/27/quaternion/">
+                <a href="/2020/07/19/uav-2/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/32.jpg" class="responsive-img" alt="四元数">
+                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼二--系统设计">
                         
-                        <span class="card-title">四元数</span>
+                        <span class="card-title">四旋翼二--系统设计</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍什么是四元数并且如何用它来表示旋转
+                            本文将介绍无人机的系统设计
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-27
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-19
                             </span>
                         <span class="publish-author">
                             
@@ -715,8 +720,16 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%9B%9B%E5%85%83%E6%95%B0/">
-                        <span class="chip bg-color">四元数</span>
+                    <a href="/tags/Drone/">
+                        <span class="chip bg-color">Drone</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%9B%9B%E6%97%8B%E7%BF%BC/">
+                        <span class="chip bg-color">四旋翼</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA/">
+                        <span class="chip bg-color">无人机</span>
                     </a>
                     
                 </div>

@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>四旋翼三--四旋翼运动学</title>
+      <link href="/2020/07/24/uav-3/"/>
+      <url>/2020/07/24/uav-3/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>本系列文章是以Vijay Kumar老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-flight/home/welcome" target="_blank" rel="noopener">Robotics: Aerial Robotics</a>为参考，进行归纳整理。</p></blockquote><p>关于旋转矩阵，欧拉角这部分内容可以看我之前的文章，这里做一些补充说明。</p><h1 id="旋转矩阵的性质"><a href="#旋转矩阵的性质" class="headerlink" title="旋转矩阵的性质"></a>旋转矩阵的性质</h1><ul><li>正交矩阵，即$RR^T=RR^{-1}=I$</li><li>行列式等于+1</li><li>任意两个旋转矩阵相乘依然是旋转矩阵</li><li>旋转矩阵的逆矩阵仍然是旋转矩阵</li></ul><h1 id="沿任意向量旋转的旋转矩阵"><a href="#沿任意向量旋转的旋转矩阵" class="headerlink" title="沿任意向量旋转的旋转矩阵"></a>沿任意向量旋转的旋转矩阵</h1><h2 id="叉乘转换"><a href="#叉乘转换" class="headerlink" title="叉乘转换"></a>叉乘转换</h2><p>两个向量叉乘可以写成一个矩阵和一个向量点乘的形式，如下：<br>$$<br>\begin{bmatrix}<br>a_1 \\ a_2 \\ a_3<br>\end{bmatrix} \times \begin{bmatrix}<br>b_1 \\ b_2 \\ b_3<br>\end{bmatrix} = \begin{bmatrix}<br>a_2b_3-a_3b_2 \\ a_3b_1-a_1b_3 \\ -a_2b_1+a_1b_2<br>\end{bmatrix} = \begin{bmatrix}<br>0&amp;-a_3&amp;a_2 \\ a_3&amp;0&amp;-a_1 \\ -a_2&amp;a_1&amp;0<br>\end{bmatrix}\begin{bmatrix}<br>b_1 \\ b_2 \\ b_3<br>\end{bmatrix}<br>$$为了以示区别，将那个展开的矩阵写为$\hat a$，所有就有了：<br>$$<br>\vec a \times \vec b = \hat a \vec b<br>$$</p><h2 id="沿任意向量旋转"><a href="#沿任意向量旋转" class="headerlink" title="沿任意向量旋转"></a>沿任意向量旋转</h2><p>沿任意向量旋转的旋转矩阵如下，其中$u$是旋转轴，$\phi$是旋转角度。<br>$$<br>Rot(u,\phi) = Icos\phi+uu^T(1-cos\phi)+\hat usin\phi<br>$$</p><h1 id="旋转以及角速度"><a href="#旋转以及角速度" class="headerlink" title="旋转以及角速度"></a>旋转以及角速度</h1><h2 id="旋转矩阵的导数"><a href="#旋转矩阵的导数" class="headerlink" title="旋转矩阵的导数"></a>旋转矩阵的导数</h2><p>已知有一个旋转矩阵$R(t)$，因为它是正交矩阵所以有：<br>$$<br>R^T(t)R(t)=I \\<br>R(t)R(t)^T=I<br>$$<br>对它进行求导后得到：<br>$$<br>\dot R^TR+R^T\dot R=0 \\<br>R\dot R^T+\dot RR^T=0<br>$$其中$R^T\dot R$和$\dot RR^T$是斜对称矩阵，所以它们就可以转换为一个向量叉乘的形式。</p><h2 id="旋转的角速度"><a href="#旋转的角速度" class="headerlink" title="旋转的角速度"></a>旋转的角速度</h2><p>假设刚体上有一点$p$经过旋转之后变成了点$q$，那么它们俩之间的关系可以写成$q(t)=R(t)p$，对两边同时求导就得到了$\dot q=\dot Rp$，其中$p$是在body frame下的位置，$\dot q$是在inertial frame下的速度。经过转换我们可以得到以下两个式子：<br>$$<br>\begin{aligned}<br>&amp;R^T\dot q=R^T\dot Rp \\<br>&amp;\dot q=\dot RR^Tq<br>\end{aligned}<br>$$在第一个式子中，点$p$左乘$R^T\dot R$后就得到了它在body frame下的速度，因此可以将$R^T\dot R$看作一个角速度记为$\hat w^b$，用来得到在body frame下某个点的速度。在第二个式子中，点$q$左乘$\dot RR^T$后就得到了它在inertial frame下的速度，因此可以将$\dot RR^T$看作一个角速度记为$\hat w^s$，用来得到在inertial frame下某个点的速度。</p><h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><p>如下图，点$p=[1,0,0]^T$绕z轴旋转到点$q=[0,1,0]^T$，求出在inertial frame和body frame的速度。<br><img src="1.png" alt=""><br>首先我们算出$\hat w^b$和$\hat w^s$如下：<br><img src="2.png" alt=""><br>在转动的过程中$q$点的坐标为$[cos\theta, sin\theta,0]^T$，可以得到在inertial frame的速度为：<br>$$<br>\begin{aligned}<br>\dot q&amp;=\dot RR^Tq \\<br>&amp;=\begin{bmatrix}<br>-sin\theta \\ cos\theta \\ 0<br>\end{bmatrix}\dot \theta<br>\end{aligned}<br>$$而在body frame里，因为刚体自身坐标系会随着刚体转动，所以点$p$的速度方向相当于点$q$在$\theta=0$时的方向，通过计算也可以得到答案：<br>$$<br>\begin{aligned}<br>R^T\dot q &amp;=R^T\dot Rp \\<br>&amp;=\begin{bmatrix}<br>0 \\ 1 \\0<br>\end{bmatrix} \dot \theta<br>\end{aligned}<br>$$</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 无人机 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Drone </tag>
+            
+            <tag> 四旋翼 </tag>
+            
+            <tag> 无人机 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>四旋翼二--系统设计</title>
       <link href="/2020/07/19/uav-2/"/>
       <url>/2020/07/19/uav-2/</url>
