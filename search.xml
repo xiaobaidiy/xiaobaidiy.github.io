@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>四旋翼四--四旋翼动力学</title>
+      <link href="/2020/07/25/uav-4/"/>
+      <url>/2020/07/25/uav-4/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>本系列文章是以Vijay Kumar老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-flight/home/welcome" target="_blank" rel="noopener">Robotics: Aerial Robotics</a>为参考，进行归纳整理。</p></blockquote><h1 id="方程式"><a href="#方程式" class="headerlink" title="方程式"></a>方程式</h1><p><img src="1.png" alt=""></p><h1 id="Euler’s公式"><a href="#Euler’s公式" class="headerlink" title="Euler’s公式"></a>Euler’s公式</h1><p>有一个刚体B，它的主轴为$\mathbf b_1$，$\mathbf b_2$，$\mathbf b_3$，它分别沿各个主轴旋转的角速度为$w_1$，$w_2$，$w_3$，那么它的合角速度为：$^A\mathbf w^B=w_1\mathbf b_1+w_2\mathbf b_2+w_3\mathbf b_3$。$^A\mathbf H_c$是刚体在inertial frame下的角动量，那么我们就可以得到合力矩 $\mathbf M_c=\frac{^Ad\mathbf H_c}{dt}$。但是，对于无人机来说，IMU得到的角速度都是在body frame下的，我们可以从以下公式得到合力矩，其中p，q，r就是从IMU得到的角速度：<br>$$<br>\begin{aligned}<br>&amp;\frac{^Bd\mathbf H_c}{dt}=I_{11}\dot {w_1}\mathbf b_1+I_{22}\dot {w_2}\mathbf b_2+I_{33}\dot {w_3}\mathbf b_3 \\<br>&amp;\frac{^Bd\mathbf H_c}{dt}+^A\mathbf w^B\times \mathbf H_c=\mathbf M_c<br>\end{aligned}<br>$$<img src="6.png" alt=""></p><h1 id="四旋翼移动方程"><a href="#四旋翼移动方程" class="headerlink" title="四旋翼移动方程"></a>四旋翼移动方程</h1><p>以下公式是在inertial frame下沿着各个轴所受的力：<br><img src="7.png" alt=""><br>以下公式是在body frame下沿着各个轴所受的力矩：<br><img src="8.png" alt=""><br>以下的两个公式是用来将body frame下的IMU得到的角速度转换到inertial frame下的roll，pitch，yaw角速度，反之亦然。这两个角速度不一样是因为，当UAV有一定的roll或pitch角度时，再转动yaw的时候，就会有分量是沿着roll或pitch的，但是对于UAV的自身坐标系来说，只有r在变。<br><img src="9.png" alt=""></p><h2 id="平面四旋翼模型"><a href="#平面四旋翼模型" class="headerlink" title="平面四旋翼模型"></a>平面四旋翼模型</h2><p><img src="10.png" alt=""></p><h2 id="四旋翼的状态空间"><a href="#四旋翼的状态空间" class="headerlink" title="四旋翼的状态空间"></a>四旋翼的状态空间</h2><p>$q$描述的是系统配置，$x$描述的是系统状态；$q_e$描述的是平衡状态下的系统配置，$x_e$描述的是平衡状态下的系统状态：<br><img src="11.png" alt=""></p><h1 id="补充资料"><a href="#补充资料" class="headerlink" title="补充资料"></a>补充资料</h1><p><strong>质心</strong>，假如有如下粒子系统，它的质心为：$\mathbf r_c=\frac{1}{m}\sum_{i=1}^Nm_i\mathbf p_i$。<br><img src="5.png" alt=""><br><strong>转动惯量</strong>：用来描述物体转动的难易程度。假如有如下不规则刚体，那么它沿某一固定轴旋转的转动惯量为：$I=\sum m_iy_i^2$<br><img src="2.png" alt=""><br>对于下图所示的系统，它的转动惯量就是：$I=mr^2$。刚体的<strong>力矩</strong> $M=I\alpha$，$\alpha$是角加速度。<br><img src="3.png" alt=""><br>下图所示的系统中，当小球被施加F力后开始转动，小球的力矩为$M =r\times F$，动量为$P=F\cdot t=ma\cdot t=mv$，角动量为$H=r\times P=I\cdot w$，$w$是角速度。<br><img src="4.png" alt=""><br><strong>角动量守恒</strong>：当物体外力矩$\tau$为0时，角动量守恒，证明过程如下：<br>$$<br>\left.<br>\begin{array}{l}<br>\Delta P=F\cdot \Delta t \\<br>M = r\times F<br>\end{array}<br>\right\}<br>\Rightarrow M = r\times \frac{\Delta P}{\Delta t} \\<br>\because \Delta H = r\times \Delta P \Rightarrow\frac{\Delta H}{\Delta t}=r\times \frac{\Delta P}{\Delta t} \\<br>\therefore M = \frac{\Delta H}{\Delta t}<br>$$<br>所以力矩是角动量的变化率。角动量时F力累计出来的，力矩是F力瞬间的作用。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 无人机 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Drone </tag>
+            
+            <tag> 四旋翼 </tag>
+            
+            <tag> 无人机 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>四旋翼三--四旋翼运动学</title>
       <link href="/2020/07/24/uav-3/"/>
       <url>/2020/07/24/uav-3/</url>

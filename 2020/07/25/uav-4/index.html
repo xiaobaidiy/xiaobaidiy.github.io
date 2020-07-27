@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="四旋翼三--四旋翼运动学, “Robot”">
+    <meta name="keywords" content="四旋翼四--四旋翼动力学, “Robot”">
     <meta name="description" content="欢乐搞机">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>四旋翼三--四旋翼运动学 | XiaoBai Robot</title>
+    <title>四旋翼四--四旋翼动力学 | XiaoBai Robot</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -304,7 +304,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">四旋翼三--四旋翼运动学</h1>
+                    <h1 class="description center-align post-title">四旋翼四--四旋翼动力学</h1>
                 </div>
             </div>
         </div>
@@ -448,7 +448,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-24
+                    2020-07-25
                 </div>
                 
 
@@ -457,7 +457,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    810
+                    700
                 </div>
                 
 
@@ -472,18 +472,12 @@
                 <blockquote>
 <p>本系列文章是以Vijay Kumar老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-flight/home/welcome" target="_blank" rel="noopener">Robotics: Aerial Robotics</a>为参考，进行归纳整理。</p>
 </blockquote>
-<p>关于旋转矩阵，欧拉角这部分内容可以看我之前的文章，这里做一些补充说明。</p>
-<h1 id="旋转矩阵的性质"><a href="#旋转矩阵的性质" class="headerlink" title="旋转矩阵的性质"></a>旋转矩阵的性质</h1><ul>
-<li>正交矩阵，即$RR^T=RR^{-1}=I$</li>
-<li>行列式等于+1</li>
-<li>任意两个旋转矩阵相乘依然是旋转矩阵</li>
-<li>旋转矩阵的逆矩阵仍然是旋转矩阵</li>
-</ul>
-<h1 id="沿任意向量旋转的旋转矩阵"><a href="#沿任意向量旋转的旋转矩阵" class="headerlink" title="沿任意向量旋转的旋转矩阵"></a>沿任意向量旋转的旋转矩阵</h1><h2 id="叉乘转换"><a href="#叉乘转换" class="headerlink" title="叉乘转换"></a>叉乘转换</h2><p>两个向量叉乘可以写成一个矩阵和一个向量点乘的形式，如下：<br>$$<br>\begin{bmatrix}<br>a_1 \\ a_2 \\ a_3<br>\end{bmatrix} \times \begin{bmatrix}<br>b_1 \\ b_2 \\ b_3<br>\end{bmatrix} = \begin{bmatrix}<br>a_2b_3-a_3b_2 \\ a_3b_1-a_1b_3 \\ -a_2b_1+a_1b_2<br>\end{bmatrix} = \begin{bmatrix}<br>0&amp;-a_3&amp;a_2 \\ a_3&amp;0&amp;-a_1 \\ -a_2&amp;a_1&amp;0<br>\end{bmatrix}\begin{bmatrix}<br>b_1 \\ b_2 \\ b_3<br>\end{bmatrix}<br>$$为了以示区别，将那个展开的矩阵写为$\hat a$，所有就有了：<br>$$<br>\vec a \times \vec b = \hat a \vec b<br>$$</p>
-<h2 id="沿任意向量旋转"><a href="#沿任意向量旋转" class="headerlink" title="沿任意向量旋转"></a>沿任意向量旋转</h2><p>沿任意向量旋转的旋转矩阵如下，其中$u$是旋转轴，$\phi$是旋转角度。<br>$$<br>Rot(u,\phi) = Icos\phi+uu^T(1-cos\phi)+\hat usin\phi<br>$$</p>
-<h1 id="旋转以及角速度"><a href="#旋转以及角速度" class="headerlink" title="旋转以及角速度"></a>旋转以及角速度</h1><h2 id="旋转矩阵的导数"><a href="#旋转矩阵的导数" class="headerlink" title="旋转矩阵的导数"></a>旋转矩阵的导数</h2><p>已知有一个旋转矩阵$R(t)$，因为它是正交矩阵所以有：<br>$$<br>R^T(t)R(t)=I \\<br>R(t)R(t)^T=I<br>$$<br>对它进行求导后得到：<br>$$<br>\dot R^TR+R^T\dot R=0 \\<br>R\dot R^T+\dot RR^T=0<br>$$其中$R^T\dot R$和$\dot RR^T$是斜对称矩阵，所以它们就可以转换为一个向量叉乘的形式。</p>
-<h2 id="旋转的角速度"><a href="#旋转的角速度" class="headerlink" title="旋转的角速度"></a>旋转的角速度</h2><p>假设刚体上有一点$p$经过旋转之后变成了点$q$，那么它们俩之间的关系可以写成$q(t)=R(t)p$，对两边同时求导就得到了$\dot q=\dot Rp$，其中$p$是在body frame下的位置，$\dot q$是在inertial frame下的速度。经过转换我们可以得到以下两个式子：<br>$$<br>\begin{aligned}<br>&amp;R^T\dot q=R^T\dot Rp \\<br>&amp;\dot q=\dot RR^Tq<br>\end{aligned}<br>$$在第一个式子中，点$p$左乘$R^T\dot R$后就得到了它在body frame下的速度，因此可以将$R^T\dot R$看作一个角速度记为$\hat w^b$，用来得到在body frame下某个点的速度。在第二个式子中，点$q$左乘$\dot RR^T$后就得到了它在inertial frame下的速度，因此可以将$\dot RR^T$看作一个角速度记为$\hat w^s$，用来得到在inertial frame下某个点的速度。</p>
-<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><p>如下图，点$p=[1,0,0]^T$绕z轴旋转到点$q=[0,1,0]^T$，求出在inertial frame和body frame的速度。<br><img src="1.png" alt=""><br>首先我们算出$\hat w^b$和$\hat w^s$如下：<br><img src="2.png" alt=""><br>在转动的过程中$q$点的坐标为$[cos\theta, sin\theta,0]^T$，可以得到在inertial frame的速度为：<br>$$<br>\begin{aligned}<br>\dot q&amp;=\dot RR^Tq \\<br>&amp;=\begin{bmatrix}<br>-sin\theta \\ cos\theta \\ 0<br>\end{bmatrix}\dot \theta<br>\end{aligned}<br>$$而在body frame里，因为刚体自身坐标系会随着刚体转动，所以点$p$的速度方向相当于点$q$在$\theta=0$时的方向，通过计算也可以得到答案：<br>$$<br>\begin{aligned}<br>R^T\dot q &amp;=R^T\dot Rp \\<br>&amp;=\begin{bmatrix}<br>0 \\ 1 \\0<br>\end{bmatrix} \dot \theta<br>\end{aligned}<br>$$</p>
+<h1 id="方程式"><a href="#方程式" class="headerlink" title="方程式"></a>方程式</h1><p><img src="1.png" alt=""></p>
+<h1 id="Euler’s公式"><a href="#Euler’s公式" class="headerlink" title="Euler’s公式"></a>Euler’s公式</h1><p>有一个刚体B，它的主轴为$\mathbf b_1$，$\mathbf b_2$，$\mathbf b_3$，它分别沿各个主轴旋转的角速度为$w_1$，$w_2$，$w_3$，那么它的合角速度为：$^A\mathbf w^B=w_1\mathbf b_1+w_2\mathbf b_2+w_3\mathbf b_3$。$^A\mathbf H_c$是刚体在inertial frame下的角动量，那么我们就可以得到合力矩 $\mathbf M_c=\frac{^Ad\mathbf H_c}{dt}$。但是，对于无人机来说，IMU得到的角速度都是在body frame下的，我们可以从以下公式得到合力矩，其中p，q，r就是从IMU得到的角速度：<br>$$<br>\begin{aligned}<br>&amp;\frac{^Bd\mathbf H_c}{dt}=I_{11}\dot {w_1}\mathbf b_1+I_{22}\dot {w_2}\mathbf b_2+I_{33}\dot {w_3}\mathbf b_3 \\<br>&amp;\frac{^Bd\mathbf H_c}{dt}+^A\mathbf w^B\times \mathbf H_c=\mathbf M_c<br>\end{aligned}<br>$$<img src="6.png" alt=""></p>
+<h1 id="四旋翼移动方程"><a href="#四旋翼移动方程" class="headerlink" title="四旋翼移动方程"></a>四旋翼移动方程</h1><p>以下公式是在inertial frame下沿着各个轴所受的力：<br><img src="7.png" alt=""><br>以下公式是在body frame下沿着各个轴所受的力矩：<br><img src="8.png" alt=""><br>以下的两个公式是用来将body frame下的IMU得到的角速度转换到inertial frame下的roll，pitch，yaw角速度，反之亦然。这两个角速度不一样是因为，当UAV有一定的roll或pitch角度时，再转动yaw的时候，就会有分量是沿着roll或pitch的，但是对于UAV的自身坐标系来说，只有r在变。<br><img src="9.png" alt=""></p>
+<h2 id="平面四旋翼模型"><a href="#平面四旋翼模型" class="headerlink" title="平面四旋翼模型"></a>平面四旋翼模型</h2><p><img src="10.png" alt=""></p>
+<h2 id="四旋翼的状态空间"><a href="#四旋翼的状态空间" class="headerlink" title="四旋翼的状态空间"></a>四旋翼的状态空间</h2><p>$q$描述的是系统配置，$x$描述的是系统状态；$q_e$描述的是平衡状态下的系统配置，$x_e$描述的是平衡状态下的系统状态：<br><img src="11.png" alt=""></p>
+<h1 id="补充资料"><a href="#补充资料" class="headerlink" title="补充资料"></a>补充资料</h1><p><strong>质心</strong>，假如有如下粒子系统，它的质心为：$\mathbf r_c=\frac{1}{m}\sum_{i=1}^Nm_i\mathbf p_i$。<br><img src="5.png" alt=""><br><strong>转动惯量</strong>：用来描述物体转动的难易程度。假如有如下不规则刚体，那么它沿某一固定轴旋转的转动惯量为：$I=\sum m_iy_i^2$<br><img src="2.png" alt=""><br>对于下图所示的系统，它的转动惯量就是：$I=mr^2$。刚体的<strong>力矩</strong> $M=I\alpha$，$\alpha$是角加速度。<br><img src="3.png" alt=""><br>下图所示的系统中，当小球被施加F力后开始转动，小球的力矩为$M =r\times F$，动量为$P=F\cdot t=ma\cdot t=mv$，角动量为$H=r\times P=I\cdot w$，$w$是角速度。<br><img src="4.png" alt=""><br><strong>角动量守恒</strong>：当物体外力矩$\tau$为0时，角动量守恒，证明过程如下：<br>$$<br>\left.<br>\begin{array}{l}<br>\Delta P=F\cdot \Delta t \\<br>M = r\times F<br>\end{array}<br>\right\}<br>\Rightarrow M = r\times \frac{\Delta P}{\Delta t} \\<br>\because \Delta H = r\times \Delta P \Rightarrow\frac{\Delta H}{\Delta t}=r\times \frac{\Delta P}{\Delta t} \\<br>\therefore M = \frac{\Delta H}{\Delta t}<br>$$<br>所以力矩是角动量的变化率。角动量时F力累计出来的，力矩是F力瞬间的作用。</p>
 
             </div>
             <hr/>
@@ -509,7 +503,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/07/24/uav-3/">http://xiaobaidiy.github.io/2020/07/24/uav-3/</a>
+                    <a href="http://xiaobaidiy.github.io/2020/07/25/uav-4/">http://xiaobaidiy.github.io/2020/07/25/uav-4/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -601,7 +595,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-07-24T21-26-37',
+        id: '2020-07-25T19-39-34',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -625,9 +619,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/07/25/uav-4/">
                     <div class="card-image">
@@ -644,9 +639,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-25
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-25
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -659,6 +654,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -685,23 +681,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/19/uav-2/">
+                <a href="/2020/07/24/uav-3/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼二--系统设计">
+                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼三--四旋翼运动学">
                         
-                        <span class="card-title">四旋翼二--系统设计</span>
+                        <span class="card-title">四旋翼三--四旋翼运动学</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍无人机的系统设计
+                            本文将介绍无人机的系统运动学
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-24
                             </span>
                         <span class="publish-author">
                             
