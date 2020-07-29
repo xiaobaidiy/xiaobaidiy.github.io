@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="四旋翼四--四旋翼动力学, “Robot”">
+    <meta name="keywords" content="四旋翼五--四旋翼的控制, “Robot”">
     <meta name="description" content="欢乐搞机">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>四旋翼四--四旋翼动力学 | XiaoBai Robot</title>
+    <title>四旋翼五--四旋翼的控制 | XiaoBai Robot</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -304,7 +304,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">四旋翼四--四旋翼动力学</h1>
+                    <h1 class="description center-align post-title">四旋翼五--四旋翼的控制</h1>
                 </div>
             </div>
         </div>
@@ -448,7 +448,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-25
+                    2020-07-28
                 </div>
                 
 
@@ -457,7 +457,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    700
+                    774
                 </div>
                 
 
@@ -472,12 +472,15 @@
                 <blockquote>
 <p>本系列文章是以Vijay Kumar老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-flight/home/welcome" target="_blank" rel="noopener">Robotics: Aerial Robotics</a>为参考，进行归纳整理。</p>
 </blockquote>
-<h1 id="方程式"><a href="#方程式" class="headerlink" title="方程式"></a>方程式</h1><p><img src="1.png" alt=""></p>
-<h1 id="Euler’s公式"><a href="#Euler’s公式" class="headerlink" title="Euler’s公式"></a>Euler’s公式</h1><p>有一个刚体B，它的主轴为$\mathbf b_1$，$\mathbf b_2$，$\mathbf b_3$，它分别沿各个主轴旋转的角速度为$w_1$，$w_2$，$w_3$，那么它的合角速度为：$^A\mathbf w^B=w_1\mathbf b_1+w_2\mathbf b_2+w_3\mathbf b_3$。$^A\mathbf H_c$是刚体在inertial frame下的角动量，那么我们就可以得到合力矩 $\mathbf M_c=\frac{^Ad\mathbf H_c}{dt}$。但是，对于无人机来说，IMU得到的角速度都是在body frame下的，我们可以从以下公式得到合力矩，其中p，q，r就是从IMU得到的角速度：<br>$$<br>\begin{aligned}<br>&amp;\frac{^Bd\mathbf H_c}{dt}=I_{11}\dot {w_1}\mathbf b_1+I_{22}\dot {w_2}\mathbf b_2+I_{33}\dot {w_3}\mathbf b_3 \\<br>&amp;\frac{^Bd\mathbf H_c}{dt}+^A\mathbf w^B\times \mathbf H_c=\mathbf M_c<br>\end{aligned}<br>$$<img src="6.png" alt=""></p>
-<h1 id="四旋翼移动方程"><a href="#四旋翼移动方程" class="headerlink" title="四旋翼移动方程"></a>四旋翼移动方程</h1><p>以下公式是在inertial frame下沿着各个轴所受的力：<br><img src="7.png" alt=""><br>以下公式是在body frame下沿着各个轴所受的力矩：<br><img src="8.png" alt=""><br>以下的两个公式是用来将body frame下的IMU得到的角速度转换到inertial frame下的roll，pitch，yaw角速度，反之亦然。这两个角速度不一样是因为，当UAV有一定的roll或pitch角度时，再转动yaw的时候，就会有分量是沿着roll或pitch的，但是对于UAV的自身坐标系来说，只有r在变。<br><img src="9.png" alt=""></p>
-<h2 id="平面四旋翼模型"><a href="#平面四旋翼模型" class="headerlink" title="平面四旋翼模型"></a>平面四旋翼模型</h2><p><img src="10.png" alt=""></p>
-<h2 id="四旋翼的状态空间"><a href="#四旋翼的状态空间" class="headerlink" title="四旋翼的状态空间"></a>四旋翼的状态空间</h2><p>$q$描述的是系统配置，$x$描述的是系统状态；$q_e$描述的是平衡状态下的系统配置，$x_e$描述的是平衡状态下的系统状态：<br><img src="11.png" alt=""></p>
-<h1 id="补充资料"><a href="#补充资料" class="headerlink" title="补充资料"></a>补充资料</h1><p><strong>质心</strong>，假如有如下粒子系统，它的质心为：$\mathbf r_c=\frac{1}{m}\sum_{i=1}^Nm_i\mathbf p_i$。<br><img src="5.png" alt=""><br><strong>转动惯量</strong>：用来描述物体转动的难易程度。假如有如下不规则刚体，那么它沿某一固定轴旋转的转动惯量为：$I=\sum m_iy_i^2$<br><img src="2.png" alt=""><br>对于下图所示的系统，它的转动惯量就是：$I=mr^2$。刚体的<strong>力矩</strong> $M=I\alpha$，$\alpha$是角加速度。<br><img src="3.png" alt=""><br>下图所示的系统中，当小球被施加F力后开始转动，小球的力矩为$M =r\times F$，动量为$P=F\cdot t=ma\cdot t=mv$，角动量为$H=r\times P=I\cdot w$，$w$是角速度。<br><img src="4.png" alt=""><br><strong>角动量守恒</strong>：当物体外力矩$\tau$为0时，角动量守恒，证明过程如下：<br>$$<br>\left.<br>\begin{array}{l}<br>\Delta P=F\cdot \Delta t \\<br>M = r\times F<br>\end{array}<br>\right\}<br>\Rightarrow M = r\times \frac{\Delta P}{\Delta t} \\<br>\because \Delta H = r\times \Delta P \Rightarrow\frac{\Delta H}{\Delta t}=r\times \frac{\Delta P}{\Delta t} \\<br>\therefore M = \frac{\Delta H}{\Delta t}<br>$$<br>所以力矩是角动量的变化率。角动量时F力累计出来的，力矩是F力瞬间的作用。</p>
+<h1 id="平面四旋翼的控制"><a href="#平面四旋翼的控制" class="headerlink" title="平面四旋翼的控制"></a>平面四旋翼的控制</h1><h2 id="平面四旋翼模型"><a href="#平面四旋翼模型" class="headerlink" title="平面四旋翼模型"></a>平面四旋翼模型</h2><p><img src="1.png" alt=""></p>
+<h2 id="动态模型线性化"><a href="#动态模型线性化" class="headerlink" title="动态模型线性化"></a>动态模型线性化</h2><p>平面四旋翼的运动方程是非线性的，如下：<br>$$<br>\begin{aligned}<br>&amp;\ddot y=-\frac{u_1}{m}sin(\phi) \\<br>&amp;\ddot z=-g+\frac{u_1}{m}cos(\phi) \\<br>&amp;\ddot \phi=-\frac{u_2}{I_{xx}}<br>\end{aligned}<br>$$平面四旋翼在悬停平衡态时会有如下配置：<br>$$<br>y_0,z_0,\phi_0=0,u_{1.0}=mg,u_{2,0}=0<br>$$ 接下来我们将模型进行线性化处理。造成模型非线性的原因是模型里存在sin，cos三角函数，当$\phi \rightarrow0$时，$sin\phi \approx\phi$，$cos\phi \approx1$。并且，因为悬停状态时，$u_1$对$\ddot y$没有影响，所以将$u_1=mg$带入，最终得到如下线性模型：<br>$$<br>\begin{aligned}<br>&amp;\ddot y=-g\phi \\<br>&amp;\ddot z=-g+\frac{u_1}{m} \\<br>&amp;\ddot \phi=\frac{u_2}{I_{xx}}<br>\end{aligned}<br>$$</p>
+<h2 id="轨迹跟踪"><a href="#轨迹跟踪" class="headerlink" title="轨迹跟踪"></a>轨迹跟踪</h2><p>平面四旋翼的轨迹设计包括了y轴和z轴的位置，速度和加速度：<br><img src="2.png" alt=""></p>
+<h2 id="嵌套控制结构"><a href="#嵌套控制结构" class="headerlink" title="嵌套控制结构"></a>嵌套控制结构</h2><p>整个控制系统中包括了位置控制以及姿态控制，位置控制会输出四旋翼所需要的推力$u_1$以及所期望的姿态$\phi,\dot \phi$。姿态控制器得到所期望的姿态后就会输出四旋翼所需要的力矩，过程如下图：<br><img src="3.png" alt=""></p>
+<h2 id="控制方程"><a href="#控制方程" class="headerlink" title="控制方程"></a>控制方程</h2><p><img src="4.png" alt=""></p>
+<h1 id="3D空间四旋翼的控制"><a href="#3D空间四旋翼的控制" class="headerlink" title="3D空间四旋翼的控制"></a>3D空间四旋翼的控制</h1><h2 id="轨迹跟踪-1"><a href="#轨迹跟踪-1" class="headerlink" title="轨迹跟踪"></a>轨迹跟踪</h2><p>空间四旋翼的轨迹设计包括了x轴，y轴，z轴的位置，速度和加速度，以及yaw的角度，角速度和角加速度：<br><img src="5.png" alt=""></p>
+<h2 id="动态模型线性化-1"><a href="#动态模型线性化-1" class="headerlink" title="动态模型线性化"></a>动态模型线性化</h2><p>空间四旋翼的运动方程是非线性的，如下：<br><img src="6.png" alt=""><br>空间四旋翼在悬停平衡态时会有如下配置：<br>$$<br>u_1\sim mg, \theta \sim 0, \phi \sim 0, \psi \sim \psi_0 \\<br>u_2\sim 0, p\sim 0, q\sim0, r\sim 0<br>$$接下来我们将模型进行线性化处理。R是旋转矩阵，当$\theta \sim 0, \phi \sim 0, \psi \sim \psi_0$时，R经过线性化处理变成了这样：<br>$$<br>R=\begin{bmatrix}<br>c\psi_0-\phi \theta s\psi_0 &amp; -s\psi_0 &amp; \theta c\psi_0+\phi s\psi_0 \\<br>s\psi_0+\phi \theta c\psi_0 &amp; c\psi_0 &amp; \theta s\psi_0-\phi c\psi_0 \\<br>-\theta &amp; \phi &amp; 1<br>\end{bmatrix}<br>$$并且，因为悬停状态时，$u_1$对$\ddot x, \ddot y$没有影响，所以将$u_1=mg$带入，最终得到如下线性模型：<br>$$<br>\begin{aligned}<br>&amp;\ddot r_1=\ddot x=g(\theta cos\psi+\phi sin\psi) \\<br>&amp;\ddot r_2=\ddot y=g(\theta sin\psi-\phi cos\psi) \\<br>&amp;\ddot r_3=\ddot z=\frac{-mg+u_1}{m}<br>\end{aligned}<br>$$当$u_2\sim 0, p\sim 0, q\sim0, r\sim 0$时，力矩方程最后一项变为0，如下：<br><img src="7.png" alt=""></p>
+<h2 id="控制结构以及方程"><a href="#控制结构以及方程" class="headerlink" title="控制结构以及方程"></a>控制结构以及方程</h2><p>整个控制系统仍然包括了位置控制以及姿态控制，位置控制会输出四旋翼所需要的推力$u_1$以及所期望的姿态$\phi, \theta, \psi$。姿态控制器得到所期望的姿态后就会输出四旋翼所需要的力矩，过程如下图：<br><img src="8.png" alt=""></p>
+<p>$\color{red}{这里留一个问题，在控制方程中p_c=q_c=0，r_c=\dot \psi^{des}，但是我不知道为什么}$</p>
 
             </div>
             <hr/>
@@ -503,7 +506,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/07/25/uav-4/">http://xiaobaidiy.github.io/2020/07/25/uav-4/</a>
+                    <a href="http://xiaobaidiy.github.io/2020/07/28/uav-5/">http://xiaobaidiy.github.io/2020/07/28/uav-5/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -595,7 +598,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-07-25T19-39-34',
+        id: '2020-07-28T20-28-18',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -619,9 +622,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/07/28/uav-5/">
                     <div class="card-image">
@@ -638,9 +642,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -653,6 +657,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -679,23 +684,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/24/uav-3/">
+                <a href="/2020/07/25/uav-4/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼三--四旋翼运动学">
+                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼四--四旋翼动力学">
                         
-                        <span class="card-title">四旋翼三--四旋翼运动学</span>
+                        <span class="card-title">四旋翼四--四旋翼动力学</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍无人机的系统运动学
+                            本文将介绍无人机的系统动力
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-25
                             </span>
                         <span class="publish-author">
                             
