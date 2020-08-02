@@ -457,7 +457,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    774
+                    849
                 </div>
                 
 
@@ -478,7 +478,17 @@
 <h2 id="嵌套控制结构"><a href="#嵌套控制结构" class="headerlink" title="嵌套控制结构"></a>嵌套控制结构</h2><p>整个控制系统中包括了位置控制以及姿态控制，位置控制会输出四旋翼所需要的推力$u_1$以及所期望的姿态$\phi,\dot \phi$。姿态控制器得到所期望的姿态后就会输出四旋翼所需要的力矩，过程如下图：<br><img src="3.png" alt=""></p>
 <h2 id="控制方程"><a href="#控制方程" class="headerlink" title="控制方程"></a>控制方程</h2><p><img src="4.png" alt=""></p>
 <h1 id="3D空间四旋翼的控制"><a href="#3D空间四旋翼的控制" class="headerlink" title="3D空间四旋翼的控制"></a>3D空间四旋翼的控制</h1><h2 id="轨迹跟踪-1"><a href="#轨迹跟踪-1" class="headerlink" title="轨迹跟踪"></a>轨迹跟踪</h2><p>空间四旋翼的轨迹设计包括了x轴，y轴，z轴的位置，速度和加速度，以及yaw的角度，角速度和角加速度：<br><img src="5.png" alt=""></p>
-<h2 id="动态模型线性化-1"><a href="#动态模型线性化-1" class="headerlink" title="动态模型线性化"></a>动态模型线性化</h2><p>空间四旋翼的运动方程是非线性的，如下：<br><img src="6.png" alt=""><br>空间四旋翼在悬停平衡态时会有如下配置：<br>$$<br>u_1\sim mg, \theta \sim 0, \phi \sim 0, \psi \sim \psi_0 \\<br>u_2\sim 0, p\sim 0, q\sim0, r\sim 0<br>$$接下来我们将模型进行线性化处理。R是旋转矩阵，当$\theta \sim 0, \phi \sim 0, \psi \sim \psi_0$时，R经过线性化处理变成了这样：<br>$$<br>R=\begin{bmatrix}<br>c\psi_0-\phi \theta s\psi_0 &amp; -s\psi_0 &amp; \theta c\psi_0+\phi s\psi_0 \\<br>s\psi_0+\phi \theta c\psi_0 &amp; c\psi_0 &amp; \theta s\psi_0-\phi c\psi_0 \\<br>-\theta &amp; \phi &amp; 1<br>\end{bmatrix}<br>$$并且，因为悬停状态时，$u_1$对$\ddot x, \ddot y$没有影响，所以将$u_1=mg$带入，最终得到如下线性模型：<br>$$<br>\begin{aligned}<br>&amp;\ddot r_1=\ddot x=g(\theta cos\psi+\phi sin\psi) \\<br>&amp;\ddot r_2=\ddot y=g(\theta sin\psi-\phi cos\psi) \\<br>&amp;\ddot r_3=\ddot z=\frac{-mg+u_1}{m}<br>\end{aligned}<br>$$当$u_2\sim 0, p\sim 0, q\sim0, r\sim 0$时，力矩方程最后一项变为0，如下：<br><img src="7.png" alt=""></p>
+<h2 id="动态模型线性化-1"><a href="#动态模型线性化-1" class="headerlink" title="动态模型线性化"></a>动态模型线性化</h2><p>空间四旋翼的运动方程是非线性的，如下：<br><img src="6.png" alt=""><br>空间四旋翼在悬停平衡态时会有如下配置：<br>$$<br>u_1\sim mg, \theta \sim 0, \phi \sim 0, \psi \sim \psi_0 \\<br>u_2\sim 0, p\sim 0, q\sim0, r\sim 0<br>$$接下来我们将模型进行线性化处理：</p>
+<ol>
+<li>线性动力方程<br>R是旋转矩阵，当$\theta \sim 0, \phi \sim 0, \psi \sim \psi_0$时，R经过线性化处理变成了这样：</li>
+</ol>
+<p>$$<br>R=\begin{bmatrix}<br>c\psi_0-\phi \theta s\psi_0 &amp; -s\psi_0 &amp; \theta c\psi_0+\phi s\psi_0 \\<br>s\psi_0+\phi \theta c\psi_0 &amp; c\psi_0 &amp; \theta s\psi_0-\phi c\psi_0 \\<br>-\theta &amp; \phi &amp; 1<br>\end{bmatrix}<br>$$并且，因为悬停状态时，$u_1$对$\ddot x, \ddot y$没有影响，所以将$u_1=mg$带入，最终得到如下线性模型：<br>$$<br>\begin{aligned}<br>&amp;\ddot r_1=\ddot x=g(\theta cos\psi+\phi sin\psi) \\<br>&amp;\ddot r_2=\ddot y=g(\theta sin\psi-\phi cos\psi) \\<br>&amp;\ddot r_3=\ddot z=\frac{-mg+u_1}{m}<br>\end{aligned}<br>$$</p>
+<ol start="2">
+<li><p>角速率<br>已知角速率有如下公式：<br>$$<br>\begin{bmatrix}<br>p \\ q \\ r<br>\end{bmatrix} = \begin{bmatrix}<br>c\theta &amp;0 &amp; -c\phi s\theta \\ 0 &amp; 1 &amp; s\phi \\ s\theta &amp; 0 &amp; c\phi c\theta<br>\end{bmatrix} \begin{bmatrix}<br>\dot \phi \\ \dot \theta \\ \dot \psi<br>\end{bmatrix}<br>$$化简之后得到：<br><img src="9.png" alt=""></p>
+</li>
+<li><p>角动量方程<br>当$u_2\sim 0, p\sim 0, q\sim0, r\sim 0$时，力矩方程最后一项变为0，如下：<br><img src="7.png" alt=""><br><img src="10.png" alt=""></p>
+</li>
+</ol>
 <h2 id="控制结构以及方程"><a href="#控制结构以及方程" class="headerlink" title="控制结构以及方程"></a>控制结构以及方程</h2><p>整个控制系统仍然包括了位置控制以及姿态控制，位置控制会输出四旋翼所需要的推力$u_1$以及所期望的姿态$\phi, \theta, \psi$。姿态控制器得到所期望的姿态后就会输出四旋翼所需要的力矩，过程如下图：<br><img src="8.png" alt=""></p>
 <p>$\color{red}{这里留一个问题，在控制方程中p_c=q_c=0，r_c=\dot \psi^{des}，但是我不知道为什么}$</p>
 
