@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>四旋翼六--四旋翼的路径规划</title>
+      <link href="/2020/08/02/uav-6/"/>
+      <url>/2020/08/02/uav-6/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>本系列文章是以Vijay Kumar老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-flight/home/welcome" target="_blank" rel="noopener">Robotics: Aerial Robotics</a>为参考，进行归纳整理。</p></blockquote><h1 id="变分法"><a href="#变分法" class="headerlink" title="变分法"></a>变分法</h1><p>变分法是处理泛函的数学领域，它最终寻求的是泛函的极大值或极小值。变分法的关键定理是欧拉-拉格朗日方程，它可以帮助寻找泛函的极大值或极小值，但是不能确定极大值还是极小值。在四旋翼的路径规划中，泛函数我们可以定义为四旋翼从起点到终点的路径，其中可以包括起点和终点的速度，加速度，甚至加加速度等等的规划。它的公式如下，其中$x(t)$是路径方程，$\dot x(t)$是速度方程，想要对什么进行规划就可以将它写到泛函数里面。<br><img src="1.png" alt=""><br>考虑这样一个情况，在给定了一个起点和终点，以及起始状态和最后状态以后，我们可以规划出无数种路径，但是为了找到那个最优路径，我就就需要用到欧拉-拉格朗日方程。</p><h1 id="欧拉-拉格朗日方程"><a href="#欧拉-拉格朗日方程" class="headerlink" title="欧拉-拉格朗日方程"></a>欧拉-拉格朗日方程</h1><p><img src="2.png" alt=""></p><h1 id="平滑路径（n-1）"><a href="#平滑路径（n-1）" class="headerlink" title="平滑路径（n=1）"></a>平滑路径（n=1）</h1><p>对于n=1的一阶系统，也就是说我想要一个最小的速度完成这个路径，那么它的泛函数可写为：$\mathcal L(\dot x,x,t)$。解的过程如下：<br><img src="3.png" alt=""><br>可以发现，最小速度的路径是一条直线，因为在起点，终点和时间确定的情况下最小速度完成的话肯定是直线。</p><h1 id="平滑路径（general-n）"><a href="#平滑路径（general-n）" class="headerlink" title="平滑路径（general n）"></a>平滑路径（general n）</h1><p><img src="4.png" alt=""></p><ul><li>n=1，minimum velocity (最短路径)</li><li>n=2，minimum acceleration</li><li>n=3，minimum jerk</li><li>n=4，minimum snap</li></ul><h1 id="Minimum-Jerk-Trajectory"><a href="#Minimum-Jerk-Trajectory" class="headerlink" title="Minimum Jerk Trajectory"></a>Minimum Jerk Trajectory</h1><p>jerk trajectory是3阶系统，也就是说我们需要定义起始点和终点的速度和加速度，解的过程如下：<br><img src="5.png" alt=""><br><img src="6.png" alt=""></p><h1 id="扩展到多维空间（n-1）"><a href="#扩展到多维空间（n-1）" class="headerlink" title="扩展到多维空间（n=1）"></a>扩展到多维空间（n=1）</h1><p><img src="7.png" alt=""></p><h2 id="Minimum-Jerk-for-Planar-Motions"><a href="#Minimum-Jerk-for-Planar-Motions" class="headerlink" title="Minimum Jerk for Planar Motions"></a>Minimum Jerk for Planar Motions</h2><p><img src="8.png" alt=""></p><h1 id="中间点路径规划"><a href="#中间点路径规划" class="headerlink" title="中间点路径规划"></a>中间点路径规划</h1><p><img src="9.png" alt=""><br><img src="10.png" alt=""><br>接下来我们就可以将每段用之前的方法来进行路径规划，但是不可以用一阶系统，因为这样会导致在中间点处的路径变得不可导，如下图：<br><img src="11.png" alt=""><br>下面我们将用二阶系统来进行路径规划：<br><img src="12.png" alt=""><br><img src="13.png" alt=""><br><img src="14.png" alt=""></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 无人机 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Drone </tag>
+            
+            <tag> 四旋翼 </tag>
+            
+            <tag> 无人机 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>四旋翼五--四旋翼的控制</title>
       <link href="/2020/07/28/uav-5/"/>
       <url>/2020/07/28/uav-5/</url>

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="四旋翼五--四旋翼的控制, “Robot”">
+    <meta name="keywords" content="四旋翼六--四旋翼的路径规划, “Robot”">
     <meta name="description" content="欢乐搞机">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>四旋翼五--四旋翼的控制 | XiaoBai Robot</title>
+    <title>四旋翼六--四旋翼的路径规划 | XiaoBai Robot</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -304,7 +304,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">四旋翼五--四旋翼的控制</h1>
+                    <h1 class="description center-align post-title">四旋翼六--四旋翼的路径规划</h1>
                 </div>
             </div>
         </div>
@@ -448,7 +448,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-28
+                    2020-08-02
                 </div>
                 
 
@@ -457,7 +457,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    849
+                    551
                 </div>
                 
 
@@ -472,25 +472,20 @@
                 <blockquote>
 <p>本系列文章是以Vijay Kumar老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-flight/home/welcome" target="_blank" rel="noopener">Robotics: Aerial Robotics</a>为参考，进行归纳整理。</p>
 </blockquote>
-<h1 id="平面四旋翼的控制"><a href="#平面四旋翼的控制" class="headerlink" title="平面四旋翼的控制"></a>平面四旋翼的控制</h1><h2 id="平面四旋翼模型"><a href="#平面四旋翼模型" class="headerlink" title="平面四旋翼模型"></a>平面四旋翼模型</h2><p><img src="1.png" alt=""></p>
-<h2 id="动态模型线性化"><a href="#动态模型线性化" class="headerlink" title="动态模型线性化"></a>动态模型线性化</h2><p>平面四旋翼的运动方程是非线性的，如下：<br>$$<br>\begin{aligned}<br>&amp;\ddot y=-\frac{u_1}{m}sin(\phi) \\<br>&amp;\ddot z=-g+\frac{u_1}{m}cos(\phi) \\<br>&amp;\ddot \phi=-\frac{u_2}{I_{xx}}<br>\end{aligned}<br>$$平面四旋翼在悬停平衡态时会有如下配置：<br>$$<br>y_0,z_0,\phi_0=0,u_{1.0}=mg,u_{2,0}=0<br>$$ 接下来我们将模型进行线性化处理。造成模型非线性的原因是模型里存在sin，cos三角函数，当$\phi \rightarrow0$时，$sin\phi \approx\phi$，$cos\phi \approx1$。并且，因为悬停状态时，$u_1$对$\ddot y$没有影响，所以将$u_1=mg$带入，最终得到如下线性模型：<br>$$<br>\begin{aligned}<br>&amp;\ddot y=-g\phi \\<br>&amp;\ddot z=-g+\frac{u_1}{m} \\<br>&amp;\ddot \phi=\frac{u_2}{I_{xx}}<br>\end{aligned}<br>$$</p>
-<h2 id="轨迹跟踪"><a href="#轨迹跟踪" class="headerlink" title="轨迹跟踪"></a>轨迹跟踪</h2><p>平面四旋翼的轨迹设计包括了y轴和z轴的位置，速度和加速度：<br><img src="2.png" alt=""></p>
-<h2 id="嵌套控制结构"><a href="#嵌套控制结构" class="headerlink" title="嵌套控制结构"></a>嵌套控制结构</h2><p>整个控制系统中包括了位置控制以及姿态控制，位置控制会输出四旋翼所需要的推力$u_1$以及所期望的姿态$\phi,\dot \phi$。姿态控制器得到所期望的姿态后就会输出四旋翼所需要的力矩，过程如下图：<br><img src="3.png" alt=""></p>
-<h2 id="控制方程"><a href="#控制方程" class="headerlink" title="控制方程"></a>控制方程</h2><p><img src="4.png" alt=""></p>
-<h1 id="3D空间四旋翼的控制"><a href="#3D空间四旋翼的控制" class="headerlink" title="3D空间四旋翼的控制"></a>3D空间四旋翼的控制</h1><h2 id="轨迹跟踪-1"><a href="#轨迹跟踪-1" class="headerlink" title="轨迹跟踪"></a>轨迹跟踪</h2><p>空间四旋翼的轨迹设计包括了x轴，y轴，z轴的位置，速度和加速度，以及yaw的角度，角速度和角加速度：<br><img src="5.png" alt=""></p>
-<h2 id="动态模型线性化-1"><a href="#动态模型线性化-1" class="headerlink" title="动态模型线性化"></a>动态模型线性化</h2><p>空间四旋翼的运动方程是非线性的，如下：<br><img src="6.png" alt=""><br>空间四旋翼在悬停平衡态时会有如下配置：<br>$$<br>u_1\sim mg, \theta \sim 0, \phi \sim 0, \psi \sim \psi_0 \\<br>u_2\sim 0, p\sim 0, q\sim0, r\sim 0<br>$$接下来我们将模型进行线性化处理：</p>
-<ol>
-<li>线性动力方程<br>R是旋转矩阵，当$\theta \sim 0, \phi \sim 0, \psi \sim \psi_0$时，R经过线性化处理变成了这样：</li>
-</ol>
-<p>$$<br>R=\begin{bmatrix}<br>c\psi_0-\phi \theta s\psi_0 &amp; -s\psi_0 &amp; \theta c\psi_0+\phi s\psi_0 \\<br>s\psi_0+\phi \theta c\psi_0 &amp; c\psi_0 &amp; \theta s\psi_0-\phi c\psi_0 \\<br>-\theta &amp; \phi &amp; 1<br>\end{bmatrix}<br>$$并且，因为悬停状态时，$u_1$对$\ddot x, \ddot y$没有影响，所以将$u_1=mg$带入，最终得到如下线性模型：<br>$$<br>\begin{aligned}<br>&amp;\ddot r_1=\ddot x=g(\theta cos\psi+\phi sin\psi) \\<br>&amp;\ddot r_2=\ddot y=g(\theta sin\psi-\phi cos\psi) \\<br>&amp;\ddot r_3=\ddot z=\frac{-mg+u_1}{m}<br>\end{aligned}<br>$$</p>
-<ol start="2">
-<li><p>角速率<br>已知角速率有如下公式：<br>$$<br>\begin{bmatrix}<br>p \\ q \\ r<br>\end{bmatrix} = \begin{bmatrix}<br>c\theta &amp;0 &amp; -c\phi s\theta \\ 0 &amp; 1 &amp; s\phi \\ s\theta &amp; 0 &amp; c\phi c\theta<br>\end{bmatrix} \begin{bmatrix}<br>\dot \phi \\ \dot \theta \\ \dot \psi<br>\end{bmatrix}<br>$$化简之后得到：<br><img src="9.png" alt=""></p>
-</li>
-<li><p>角动量方程<br>当$u_2\sim 0, p\sim 0, q\sim0, r\sim 0$时，力矩方程最后一项变为0，如下：<br><img src="7.png" alt=""><br><img src="10.png" alt=""></p>
-</li>
-</ol>
-<h2 id="控制结构以及方程"><a href="#控制结构以及方程" class="headerlink" title="控制结构以及方程"></a>控制结构以及方程</h2><p>整个控制系统仍然包括了位置控制以及姿态控制，位置控制会输出四旋翼所需要的推力$u_1$以及所期望的姿态$\phi, \theta, \psi$。姿态控制器得到所期望的姿态后就会输出四旋翼所需要的力矩，过程如下图：<br><img src="8.png" alt=""></p>
-<p>$\color{red}{这里留一个问题，在控制方程中p_c=q_c=0，r_c=\dot \psi^{des}，但是我不知道为什么}$</p>
+<h1 id="变分法"><a href="#变分法" class="headerlink" title="变分法"></a>变分法</h1><p>变分法是处理泛函的数学领域，它最终寻求的是泛函的极大值或极小值。变分法的关键定理是欧拉-拉格朗日方程，它可以帮助寻找泛函的极大值或极小值，但是不能确定极大值还是极小值。在四旋翼的路径规划中，泛函数我们可以定义为四旋翼从起点到终点的路径，其中可以包括起点和终点的速度，加速度，甚至加加速度等等的规划。它的公式如下，其中$x(t)$是路径方程，$\dot x(t)$是速度方程，想要对什么进行规划就可以将它写到泛函数里面。<br><img src="1.png" alt=""><br>考虑这样一个情况，在给定了一个起点和终点，以及起始状态和最后状态以后，我们可以规划出无数种路径，但是为了找到那个最优路径，我就就需要用到欧拉-拉格朗日方程。</p>
+<h1 id="欧拉-拉格朗日方程"><a href="#欧拉-拉格朗日方程" class="headerlink" title="欧拉-拉格朗日方程"></a>欧拉-拉格朗日方程</h1><p><img src="2.png" alt=""></p>
+<h1 id="平滑路径（n-1）"><a href="#平滑路径（n-1）" class="headerlink" title="平滑路径（n=1）"></a>平滑路径（n=1）</h1><p>对于n=1的一阶系统，也就是说我想要一个最小的速度完成这个路径，那么它的泛函数可写为：$\mathcal L(\dot x,x,t)$。解的过程如下：<br><img src="3.png" alt=""><br>可以发现，最小速度的路径是一条直线，因为在起点，终点和时间确定的情况下最小速度完成的话肯定是直线。</p>
+<h1 id="平滑路径（general-n）"><a href="#平滑路径（general-n）" class="headerlink" title="平滑路径（general n）"></a>平滑路径（general n）</h1><p><img src="4.png" alt=""></p>
+<ul>
+<li>n=1，minimum velocity (最短路径)</li>
+<li>n=2，minimum acceleration</li>
+<li>n=3，minimum jerk</li>
+<li>n=4，minimum snap</li>
+</ul>
+<h1 id="Minimum-Jerk-Trajectory"><a href="#Minimum-Jerk-Trajectory" class="headerlink" title="Minimum Jerk Trajectory"></a>Minimum Jerk Trajectory</h1><p>jerk trajectory是3阶系统，也就是说我们需要定义起始点和终点的速度和加速度，解的过程如下：<br><img src="5.png" alt=""><br><img src="6.png" alt=""></p>
+<h1 id="扩展到多维空间（n-1）"><a href="#扩展到多维空间（n-1）" class="headerlink" title="扩展到多维空间（n=1）"></a>扩展到多维空间（n=1）</h1><p><img src="7.png" alt=""></p>
+<h2 id="Minimum-Jerk-for-Planar-Motions"><a href="#Minimum-Jerk-for-Planar-Motions" class="headerlink" title="Minimum Jerk for Planar Motions"></a>Minimum Jerk for Planar Motions</h2><p><img src="8.png" alt=""></p>
+<h1 id="中间点路径规划"><a href="#中间点路径规划" class="headerlink" title="中间点路径规划"></a>中间点路径规划</h1><p><img src="9.png" alt=""><br><img src="10.png" alt=""><br>接下来我们就可以将每段用之前的方法来进行路径规划，但是不可以用一阶系统，因为这样会导致在中间点处的路径变得不可导，如下图：<br><img src="11.png" alt=""><br>下面我们将用二阶系统来进行路径规划：<br><img src="12.png" alt=""><br><img src="13.png" alt=""><br><img src="14.png" alt=""></p>
 
             </div>
             <hr/>
@@ -516,7 +511,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/07/28/uav-5/">http://xiaobaidiy.github.io/2020/07/28/uav-5/</a>
+                    <a href="http://xiaobaidiy.github.io/2020/08/02/uav-6/">http://xiaobaidiy.github.io/2020/08/02/uav-6/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -608,7 +603,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-07-28T20-28-18',
+        id: '2020-08-02T20-49-38',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -632,9 +627,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/08/02/uav-6/">
                     <div class="card-image">
@@ -651,9 +647,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-02
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-02
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -666,6 +662,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -692,23 +689,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/25/uav-4/">
+                <a href="/2020/07/28/uav-5/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼四--四旋翼动力学">
+                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼五--四旋翼的控制">
                         
-                        <span class="card-title">四旋翼四--四旋翼动力学</span>
+                        <span class="card-title">四旋翼五--四旋翼的控制</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍无人机的系统动力
+                            本文将介绍无人机的四旋翼的控制
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-25
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
                             </span>
                         <span class="publish-author">
                             
