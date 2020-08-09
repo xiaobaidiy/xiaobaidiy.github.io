@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>运动规划一--图与网格的路径规划</title>
+      <link href="/2020/08/09/motion-plan-1/"/>
+      <url>/2020/08/09/motion-plan-1/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>本系列文章是以CJ Taylor老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-motion-planning/home/welcome" target="_blank" rel="noopener">Robotics: Computational Motion Planning</a>为参考，进行归纳整理。</p></blockquote><h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Motion planning的目标是可以让机器人自动的决定如何从一个点移动到另一个点，这中间可能会有障碍，也可能无法到达。为了解决这个问题我们可以将地图转换成网格的形式，也可以转换成图的形式。在网格这种形式下，每一个格子都是一个node，每个node之间的cost是一样的；在图这种形式下，每个node之间cost不一定是一样的。我认为网格的形式更适合室内做motion planning，而图的形式则更适合城市交通。<br><img src="1.png" alt=""></p><h1 id="Grassfire-Algorithm"><a href="#Grassfire-Algorithm" class="headerlink" title="Grassfire Algorithm"></a>Grassfire Algorithm</h1><p>Grassfire Algorithm是应用于网格的算法，做法就像它的名字一样，从目标node开始并且将它的cost设为0，逐个访问周围的node并给它们的cost加1，直到找到开始的node，开始的node上的cost就是最小的cost，然后沿着cost从大到小就可以找到一条路线。如果经过迭代所有相邻的node都访问过了都没有找到开始的node，那么在这种情况下就没有存在的路线。<br><img src="2.png" alt=""></p><h2 id="Grassfire-algorithm-–-pseudo-code"><a href="#Grassfire-algorithm-–-pseudo-code" class="headerlink" title="Grassfire algorithm – pseudo code"></a>Grassfire algorithm – pseudo code</h2><p><img src="3.png" alt=""></p><h2 id="Grassfire-algorithm-–-Computational-Complexity"><a href="#Grassfire-algorithm-–-Computational-Complexity" class="headerlink" title="Grassfire algorithm – Computational Complexity"></a>Grassfire algorithm – Computational Complexity</h2><p>在算法迭代的过程中所有的node只会被遍历一次，所以它的计算复杂度为：<br>$$<br>\mathcal O(|V|) \text{，$V$是图中node的数量}<br>$$</p><h1 id="Dijkstra’s-Algorithm"><a href="#Dijkstra’s-Algorithm" class="headerlink" title="Dijkstra’s Algorithm"></a>Dijkstra’s Algorithm</h1><p>Grassfire Algorithm可应用于图的算法，那么它就同样也可以用于网格，只要将每个node之间的cost设为1即可。它的做法是先从起始node开始，找到他周围的所有的node，并且记下到它们的cost，接着访问cost最小的node，同样找到它周围的所有node，如果它周围的node有已经被标记的，那么就需要判断，如果从它过去cost小的话就将它原本的cost改掉，如果不是的话就保持不变，对于未标记的node就将它的cost累加即可，以此迭代直到访问目标node。在下图这个例子中，红色的node是已经被访问过的，而蓝色的node是还在被观察的node。<br><img src="4.png" alt=""></p><h2 id="Dijkstra’s-algorithm-–-pseudo-code"><a href="#Dijkstra’s-algorithm-–-pseudo-code" class="headerlink" title="Dijkstra’s algorithm – pseudo code"></a>Dijkstra’s algorithm – pseudo code</h2><p><img src="5.png" alt=""></p><h2 id="Dijkstra’s-algorithm-–-Computational-Complexity"><a href="#Dijkstra’s-algorithm-–-Computational-Complexity" class="headerlink" title="Dijkstra’s algorithm – Computational Complexity"></a>Dijkstra’s algorithm – Computational Complexity</h2><p>相比grassfire algorithm，Dijkstra’s algorithm每次迭代所选择访问的node并不是随机的，而是当前cost最小的，所以每一次迭代都会再遍历一次被观察的node，所以它的计算复杂度为：<br>$$<br>\mathcal O(|V|^2) \text{，$V$是图中node的数量}<br>$$但是，如果我们始终用priority queue来保持被观察的node是排序好的，那么它的计算复杂度变为：<br>$$<br>\mathcal O((|E|+|V|)log(|V|)) \text{，$V$是图中node的数量, $E$是edge的数量}<br>$$</p><h1 id="A-Algorithm"><a href="#A-Algorithm" class="headerlink" title="A* Algorithm"></a>A* Algorithm</h1><p>Grassfire Algorithm和Dijkstras Algorithm是一种扩散式寻找目标node的方法，几乎要遍历所有的node。这样往往是非常低效的，A*算法用到了一个H函数，这个函数的目的是可以指导算法向着目标node的方向遍历。</p><h2 id="Heuristic-Functions"><a href="#Heuristic-Functions" class="headerlink" title="Heuristic Functions"></a>Heuristic Functions</h2><p>这个H函数就相当于在原来的cost上又多加了一个新的cost，我们要利用这个cost来指导算法遍历的向着目标node的方向遍历，通常这个cost要设计为越靠近目标node，它的值越小。所以它需要满足以下要求：</p><ol><li>H(goal)要为0</li><li>对任意两个相邻node，从node x到node y都有H(x)&lt;=H(y)+d(x,y)。如果H(n)代表的是node n到goal node的距离，假设d(x,y)=1，H(x)=5，H(y)=1的话，可以发现这三个点所形成的三角形就不成立。</li></ol><p>如果满足这两点的话，对于任何node n，H(n)&lt;=从n到goal node的最短路径。</p><p>对于在网格上进行路径规划的情况，通常会用以下两种H函数：</p><ul><li>Euclidean Distance : $H(x_n,y_n)=\sqrt{((x_n-x_g)^2+(y_n-y_g)^2)}$</li><li>Euclidean Distance : $H(x_n,y_n)=|(x_n-x_g)|+|(y_n-y_g)|$</li><li>$(x_n,x_y)$是node n的坐标，$(x_g,x_g)$是目标node的坐标。<h2 id="A-algorithm-–-pseudo-code"><a href="#A-algorithm-–-pseudo-code" class="headerlink" title="A* algorithm – pseudo code"></a>A* algorithm – pseudo code</h2><img src="6.png" alt=""><h2 id="A-algorithm-和-Dijkstra’s-Algorithm对比"><a href="#A-algorithm-和-Dijkstra’s-Algorithm对比" class="headerlink" title="A* algorithm 和 Dijkstra’s Algorithm对比"></a>A* algorithm 和 Dijkstra’s Algorithm对比</h2><img src="7.png" alt=""></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 运动规划 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> motion planning </tag>
+            
+            <tag> 运动规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>四旋翼六--四旋翼的路径规划</title>
       <link href="/2020/08/02/uav-6/"/>
       <url>/2020/08/02/uav-6/</url>

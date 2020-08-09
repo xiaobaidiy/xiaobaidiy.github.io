@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="四旋翼六--四旋翼的路径规划, “Robot”">
+    <meta name="keywords" content="运动规划一--图与网格的路径规划, “Robot”">
     <meta name="description" content="欢乐搞机">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>四旋翼六--四旋翼的路径规划 | XiaoBai Robot</title>
+    <title>运动规划一--图与网格的路径规划 | XiaoBai Robot</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -299,12 +299,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/31.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/34.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">四旋翼六--四旋翼的路径规划</h1>
+                    <h1 class="description center-align post-title">运动规划一--图与网格的路径规划</h1>
                 </div>
             </div>
         </div>
@@ -415,16 +415,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Drone/">
-                                <span class="chip bg-color">Drone</span>
+                            <a href="/tags/motion-planning/">
+                                <span class="chip bg-color">motion planning</span>
                             </a>
                         
-                            <a href="/tags/%E5%9B%9B%E6%97%8B%E7%BF%BC/">
-                                <span class="chip bg-color">四旋翼</span>
-                            </a>
-                        
-                            <a href="/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA/">
-                                <span class="chip bg-color">无人机</span>
+                            <a href="/tags/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/">
+                                <span class="chip bg-color">运动规划</span>
                             </a>
                         
                     </div>
@@ -435,8 +431,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E6%97%A0%E4%BA%BA%E6%9C%BA/" class="post-category">
-                                无人机
+                            <a href="/categories/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/" class="post-category">
+                                运动规划
                             </a>
                         
                     </div>
@@ -448,7 +444,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-02
+                    2020-08-09
                 </div>
                 
 
@@ -457,7 +453,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    551
+                    1k
                 </div>
                 
 
@@ -470,22 +466,28 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <blockquote>
-<p>本系列文章是以Vijay Kumar老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-flight/home/welcome" target="_blank" rel="noopener">Robotics: Aerial Robotics</a>为参考，进行归纳整理。</p>
+<p>本系列文章是以CJ Taylor老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-motion-planning/home/welcome" target="_blank" rel="noopener">Robotics: Computational Motion Planning</a>为参考，进行归纳整理。</p>
 </blockquote>
-<h1 id="变分法"><a href="#变分法" class="headerlink" title="变分法"></a>变分法</h1><p>变分法是处理泛函的数学领域，它最终寻求的是泛函的极大值或极小值。变分法的关键定理是欧拉-拉格朗日方程，它可以帮助寻找泛函的极大值或极小值，但是不能确定极大值还是极小值。在四旋翼的路径规划中，泛函数我们可以定义为四旋翼从起点到终点的路径，其中可以包括起点和终点的速度，加速度，甚至加加速度等等的规划。它的公式如下，其中$x(t)$是路径方程，$\dot x(t)$是速度方程，想要对什么进行规划就可以将它写到泛函数里面。<br><img src="1.png" alt=""><br>考虑这样一个情况，在给定了一个起点和终点，以及起始状态和最后状态以后，我们可以规划出无数种路径，但是为了找到那个最优路径，我就就需要用到欧拉-拉格朗日方程。</p>
-<h1 id="欧拉-拉格朗日方程"><a href="#欧拉-拉格朗日方程" class="headerlink" title="欧拉-拉格朗日方程"></a>欧拉-拉格朗日方程</h1><p><img src="2.png" alt=""></p>
-<h1 id="平滑路径（n-1）"><a href="#平滑路径（n-1）" class="headerlink" title="平滑路径（n=1）"></a>平滑路径（n=1）</h1><p>对于n=1的一阶系统，也就是说我想要一个最小的速度完成这个路径，那么它的泛函数可写为：$\mathcal L(\dot x,x,t)$。解的过程如下：<br><img src="3.png" alt=""><br>可以发现，最小速度的路径是一条直线，因为在起点，终点和时间确定的情况下最小速度完成的话肯定是直线。</p>
-<h1 id="平滑路径（general-n）"><a href="#平滑路径（general-n）" class="headerlink" title="平滑路径（general n）"></a>平滑路径（general n）</h1><p><img src="4.png" alt=""></p>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Motion planning的目标是可以让机器人自动的决定如何从一个点移动到另一个点，这中间可能会有障碍，也可能无法到达。为了解决这个问题我们可以将地图转换成网格的形式，也可以转换成图的形式。在网格这种形式下，每一个格子都是一个node，每个node之间的cost是一样的；在图这种形式下，每个node之间cost不一定是一样的。我认为网格的形式更适合室内做motion planning，而图的形式则更适合城市交通。<br><img src="1.png" alt=""></p>
+<h1 id="Grassfire-Algorithm"><a href="#Grassfire-Algorithm" class="headerlink" title="Grassfire Algorithm"></a>Grassfire Algorithm</h1><p>Grassfire Algorithm是应用于网格的算法，做法就像它的名字一样，从目标node开始并且将它的cost设为0，逐个访问周围的node并给它们的cost加1，直到找到开始的node，开始的node上的cost就是最小的cost，然后沿着cost从大到小就可以找到一条路线。如果经过迭代所有相邻的node都访问过了都没有找到开始的node，那么在这种情况下就没有存在的路线。<br><img src="2.png" alt=""></p>
+<h2 id="Grassfire-algorithm-–-pseudo-code"><a href="#Grassfire-algorithm-–-pseudo-code" class="headerlink" title="Grassfire algorithm – pseudo code"></a>Grassfire algorithm – pseudo code</h2><p><img src="3.png" alt=""></p>
+<h2 id="Grassfire-algorithm-–-Computational-Complexity"><a href="#Grassfire-algorithm-–-Computational-Complexity" class="headerlink" title="Grassfire algorithm – Computational Complexity"></a>Grassfire algorithm – Computational Complexity</h2><p>在算法迭代的过程中所有的node只会被遍历一次，所以它的计算复杂度为：<br>$$<br>\mathcal O(|V|) \text{，$V$是图中node的数量}<br>$$</p>
+<h1 id="Dijkstra’s-Algorithm"><a href="#Dijkstra’s-Algorithm" class="headerlink" title="Dijkstra’s Algorithm"></a>Dijkstra’s Algorithm</h1><p>Grassfire Algorithm可应用于图的算法，那么它就同样也可以用于网格，只要将每个node之间的cost设为1即可。它的做法是先从起始node开始，找到他周围的所有的node，并且记下到它们的cost，接着访问cost最小的node，同样找到它周围的所有node，如果它周围的node有已经被标记的，那么就需要判断，如果从它过去cost小的话就将它原本的cost改掉，如果不是的话就保持不变，对于未标记的node就将它的cost累加即可，以此迭代直到访问目标node。在下图这个例子中，红色的node是已经被访问过的，而蓝色的node是还在被观察的node。<br><img src="4.png" alt=""></p>
+<h2 id="Dijkstra’s-algorithm-–-pseudo-code"><a href="#Dijkstra’s-algorithm-–-pseudo-code" class="headerlink" title="Dijkstra’s algorithm – pseudo code"></a>Dijkstra’s algorithm – pseudo code</h2><p><img src="5.png" alt=""></p>
+<h2 id="Dijkstra’s-algorithm-–-Computational-Complexity"><a href="#Dijkstra’s-algorithm-–-Computational-Complexity" class="headerlink" title="Dijkstra’s algorithm – Computational Complexity"></a>Dijkstra’s algorithm – Computational Complexity</h2><p>相比grassfire algorithm，Dijkstra’s algorithm每次迭代所选择访问的node并不是随机的，而是当前cost最小的，所以每一次迭代都会再遍历一次被观察的node，所以它的计算复杂度为：<br>$$<br>\mathcal O(|V|^2) \text{，$V$是图中node的数量}<br>$$但是，如果我们始终用priority queue来保持被观察的node是排序好的，那么它的计算复杂度变为：<br>$$<br>\mathcal O((|E|+|V|)log(|V|)) \text{，$V$是图中node的数量, $E$是edge的数量}<br>$$</p>
+<h1 id="A-Algorithm"><a href="#A-Algorithm" class="headerlink" title="A* Algorithm"></a>A* Algorithm</h1><p>Grassfire Algorithm和Dijkstras Algorithm是一种扩散式寻找目标node的方法，几乎要遍历所有的node。这样往往是非常低效的，A*算法用到了一个H函数，这个函数的目的是可以指导算法向着目标node的方向遍历。</p>
+<h2 id="Heuristic-Functions"><a href="#Heuristic-Functions" class="headerlink" title="Heuristic Functions"></a>Heuristic Functions</h2><p>这个H函数就相当于在原来的cost上又多加了一个新的cost，我们要利用这个cost来指导算法遍历的向着目标node的方向遍历，通常这个cost要设计为越靠近目标node，它的值越小。所以它需要满足以下要求：</p>
+<ol>
+<li>H(goal)要为0</li>
+<li>对任意两个相邻node，从node x到node y都有H(x)&lt;=H(y)+d(x,y)。如果H(n)代表的是node n到goal node的距离，假设d(x,y)=1，H(x)=5，H(y)=1的话，可以发现这三个点所形成的三角形就不成立。</li>
+</ol>
+<p>如果满足这两点的话，对于任何node n，H(n)&lt;=从n到goal node的最短路径。</p>
+<p>对于在网格上进行路径规划的情况，通常会用以下两种H函数：</p>
 <ul>
-<li>n=1，minimum velocity (最短路径)</li>
-<li>n=2，minimum acceleration</li>
-<li>n=3，minimum jerk</li>
-<li>n=4，minimum snap</li>
+<li>Euclidean Distance : $H(x_n,y_n)=\sqrt{((x_n-x_g)^2+(y_n-y_g)^2)}$</li>
+<li>Euclidean Distance : $H(x_n,y_n)=|(x_n-x_g)|+|(y_n-y_g)|$</li>
+<li>$(x_n,x_y)$是node n的坐标，$(x_g,x_g)$是目标node的坐标。<h2 id="A-algorithm-–-pseudo-code"><a href="#A-algorithm-–-pseudo-code" class="headerlink" title="A* algorithm – pseudo code"></a>A* algorithm – pseudo code</h2><img src="6.png" alt=""><h2 id="A-algorithm-和-Dijkstra’s-Algorithm对比"><a href="#A-algorithm-和-Dijkstra’s-Algorithm对比" class="headerlink" title="A* algorithm 和 Dijkstra’s Algorithm对比"></a>A* algorithm 和 Dijkstra’s Algorithm对比</h2><img src="7.png" alt=""></li>
 </ul>
-<h1 id="Minimum-Jerk-Trajectory"><a href="#Minimum-Jerk-Trajectory" class="headerlink" title="Minimum Jerk Trajectory"></a>Minimum Jerk Trajectory</h1><p>jerk trajectory是3阶系统，也就是说我们需要定义起始点和终点的速度和加速度，解的过程如下：<br><img src="5.png" alt=""><br><img src="6.png" alt=""></p>
-<h1 id="扩展到多维空间（n-1）"><a href="#扩展到多维空间（n-1）" class="headerlink" title="扩展到多维空间（n=1）"></a>扩展到多维空间（n=1）</h1><p><img src="7.png" alt=""></p>
-<h2 id="Minimum-Jerk-for-Planar-Motions"><a href="#Minimum-Jerk-for-Planar-Motions" class="headerlink" title="Minimum Jerk for Planar Motions"></a>Minimum Jerk for Planar Motions</h2><p><img src="8.png" alt=""></p>
-<h1 id="中间点路径规划"><a href="#中间点路径规划" class="headerlink" title="中间点路径规划"></a>中间点路径规划</h1><p><img src="9.png" alt=""><br><img src="10.png" alt=""><br>接下来我们就可以将每段用之前的方法来进行路径规划，但是不可以用一阶系统，因为这样会导致在中间点处的路径变得不可导，如下图：<br><img src="11.png" alt=""><br>下面我们将用二阶系统来进行路径规划：<br><img src="12.png" alt=""><br><img src="13.png" alt=""><br><img src="14.png" alt=""></p>
 
             </div>
             <hr/>
@@ -511,7 +513,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/08/02/uav-6/">http://xiaobaidiy.github.io/2020/08/02/uav-6/</a>
+                    <a href="http://xiaobaidiy.github.io/2020/08/09/motion-plan-1/">http://xiaobaidiy.github.io/2020/08/09/motion-plan-1/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -549,16 +551,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Drone/">
-                                    <span class="chip bg-color">Drone</span>
+                                <a href="/tags/motion-planning/">
+                                    <span class="chip bg-color">motion planning</span>
                                 </a>
                             
-                                <a href="/tags/%E5%9B%9B%E6%97%8B%E7%BF%BC/">
-                                    <span class="chip bg-color">四旋翼</span>
-                                </a>
-                            
-                                <a href="/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA/">
-                                    <span class="chip bg-color">无人机</span>
+                                <a href="/tags/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/">
+                                    <span class="chip bg-color">运动规划</span>
                                 </a>
                             
                         </div>
@@ -603,7 +601,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-08-02T20-49-38',
+        id: '2020-08-09T20-55-40',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -627,9 +625,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/08/09/motion-plan-1/">
                     <div class="card-image">
@@ -646,9 +645,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-09
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-09
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -661,6 +660,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -683,23 +683,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/28/uav-5/">
+                <a href="/2020/08/02/uav-6/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼五--四旋翼的控制">
+                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼六--四旋翼的路径规划">
                         
-                        <span class="card-title">四旋翼五--四旋翼的控制</span>
+                        <span class="card-title">四旋翼六--四旋翼的路径规划</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍无人机的四旋翼的控制
+                            本文将介绍无人机的四旋翼的路径规划
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-02
                             </span>
                         <span class="publish-author">
                             
