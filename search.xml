@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>运动规划二--Configuration Space</title>
+      <link href="/2020/08/19/motion-plan-2/"/>
+      <url>/2020/08/19/motion-plan-2/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>本系列文章是以CJ Taylor老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-motion-planning/home/welcome" target="_blank" rel="noopener">Robotics: Computational Motion Planning</a>为参考，进行归纳整理。</p></blockquote><h1 id="Configuration-Space"><a href="#Configuration-Space" class="headerlink" title="Configuration Space"></a>Configuration Space</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>上一讲中我们将motion planning问题转化到了图上，但是这样对于机器人的位置描述是离散的。然而在实际中，大多数机器人都是在空间中连续移动的，所以我们用到了Cspace。</p><h2 id="平面移动机器人"><a href="#平面移动机器人" class="headerlink" title="平面移动机器人"></a>平面移动机器人</h2><p>假设有下图所示的机器人，它可以在平面内移动到任意地方，因此这个机器人就有2个DOF，并且我们可以将这个机器人的Cspace与平面上的坐标联系起来，也就是说Cspace描述了这个机器人可以到达的位置。<br><img src="1.png" alt=""><br>当我们在平面增加了一个固定的障碍物后，我们需要在Cspace表示出来有障碍物的地方是不能到达的，如下图所示，其中黑色的部分就是障碍物的Cspace。这里我们将robot定义为一个点，然后将它的外形与obstacle结合，就有了configuration space obstacle，这样的话就可以考虑robot是一个点从而进行路径规划。所以我们发现机器人的外形也会影响它的Cspace。<br><img src="2.png" alt=""><br><img src="3.png" alt=""></p><h1 id="RR-Arm"><a href="#RR-Arm" class="headerlink" title="RR Arm"></a>RR Arm</h1><p>Cspace是可以应用到许多的机器人上，这里用一个简单的平面RR机械臂举个例子。我们可以考虑将两个手臂的转动角度$\theta_1$和$\theta_2$与Cspace联系起来。如下图所示，右图横坐标是$\theta_1$的角度，纵坐标是$\theta_2$的角度，现在没有障碍物，所以右图的Cspace整个都是free space。<br><img src="4.png" alt=""><br>当我们将障碍物加入环境中时我们就要考虑哪一种configuration是不可行的，也就是说哪一种（$\theta_1$，$\theta_2$）是会造成碰撞的。如下图所示，由于有障碍物的存在，所以有些角度的组合是不可行的。有了这样的Cspace之后，我们就可以将起始点和终点对应的（$\theta_1$，$\theta_2$）标出来，然后进行路径规划。<br><img src="5.png" alt=""></p><h1 id="Piano-Mover’s-Problem"><a href="#Piano-Mover’s-Problem" class="headerlink" title="Piano Mover’s Problem"></a>Piano Mover’s Problem</h1><p>假设有一个机器人它可以在平面内移动和旋转，所以它就有3个DOF可以表示为（$t_x$，$t_y$，$\theta$），那么它的Cspace就是3D的。如下图所示，当我们需要规划机器人穿过那个洞时，就需要考虑到它的位置和角度，就要在一个3D的Cspace上进行规划。如果是一个RRRRR Arm的话，它的Cspace就是5维的，所以不同的机器人可能会有不同维度的Cspace。<br><img src="6.png" alt=""></p><h1 id="Visibilty-Graph"><a href="#Visibilty-Graph" class="headerlink" title="Visibilty Graph"></a>Visibilty Graph</h1><p>现在我们有了Cspace，那么为了应用我们之前的算法就需要将他转换成图的形式。转化的方式就是将Cspace里顶点，包括障碍物顶点，边界的顶点，起始点和终点，如果可以连接起来并且不被障碍物阻挡那就将它们连接起来，这样就形成了一个图，就可以用dijkstra或者A*算法解决了。<br><img src="7.png" alt=""></p><h1 id="Trapezoidal-Decomposition"><a href="#Trapezoidal-Decomposition" class="headerlink" title="Trapezoidal Decomposition"></a>Trapezoidal Decomposition</h1><p>梯形分解法的目的是将Cspace的free space简化，这个方法用在configuration space obstables是多边形的情况时是十分有效的。它会将整体空间变成一张图，然后利用各区的点和边来表明相邻关系。在下图这个例子中，首先我们对obstacles的顶点的x轴坐标进行划分，将free space划分为了不同的区域。<br><img src="8.png" alt=""><br>然后我们用绿色的点来代表那些独立的free space区域，将相邻的区域连接起来，这样就形成了一个图，如绿色部分所示。然后找出哪个区域包含起始点和终点，然后就可以规划出一条路径。但是这个路径只是说明了robot可以从起始区域开始，沿着某些区域到达终点所在的区域，这并不是准确的路径规划。可能还需要进一步的规划，这个在视屏里没有介绍。<br><img src="9.png" alt=""><br><img src="10.png" alt=""></p><h1 id="Collision-Detection-and-Planning"><a href="#Collision-Detection-and-Planning" class="headerlink" title="Collision Detection and Planning"></a>Collision Detection and Planning</h1><p>这一节将介绍一种方法来判断机器人在某种configuration下会不会与障碍物发生碰撞，从而得到有障碍物的Cspace。</p><h2 id="Collision-Detection-Function"><a href="#Collision-Detection-Function" class="headerlink" title="Collision Detection Function"></a>Collision Detection Function</h2><p>为了方便理解，我们设一个function叫做CollisionCheck(x)，其中x是Cspace中的一个点。如果x是在free space的，那么CollisionCheck(x)就返回0，反之则返回1。用这个function遍历整个Cspace就可以绘制出来一个包含障碍物的Cspace。<br><img src="11.png" alt=""></p><h2 id="Collision-Detection"><a href="#Collision-Detection" class="headerlink" title="Collision Detection"></a>Collision Detection</h2><p>那么该如何实现碰撞检测呢？碰撞检测的方法如图所示，在这里我们可以使用一系列三角形来表示机器人和障碍物，这样就把机器人和障碍物是否相撞的问题转化为了三角形重叠的问题。<br><img src="12.png" alt=""><br>我们可以通过检查两个三角形的所有边，并且测试这些边中是否存在一条边使得一个三角形的所有点位于该边的一侧，另一个三角形的所有点位于该边的另一侧。我们最多需要检测两个三角形的六条边，如果找到一条边满足上述条件，那么就证明这两个三角形不重叠，反之，这两个三角形就重叠。<br><img src="13.png" alt=""><br><img src="14.png" alt=""></p><h2 id="Sampled-Points-in-freespace"><a href="#Sampled-Points-in-freespace" class="headerlink" title="Sampled Points in freespace"></a>Sampled Points in freespace</h2><p>对于连续的Cspace我们无法使用A*算法和Dijkstra算法来进行路径规划，我们可以对它进行网格化处理，也就是采样的方式。对于每一个采样点我们使用CollisionCheck函数来确定它是否是在free space，free space中的所有采样点都被视为图中的node。由于是采样，所以可能会导致free space的描述不准确，这里我们先假设相邻的node之间都是free space，于是我们就可以在这个图上进行路径规划，为了保证起始点和终点都是图中的两个节点，我们需要进行选择或者增加起始点和终点在图中。<br><img src="15.png" alt=""></p><h1 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h1><p>这里用一个RR Arm进行举例，首先我们要根据CollisionCheck function来得到Cspace。<br><img src="16.png" alt=""><br>然后在Cspace上标出起始点和终止点，并且用Dijkstra算法进行遍历。<br><img src="17.png" alt=""><br>找到终止点后，就可以回溯一条最短路径来控制$\theta_1$和$\theta_2$到达终点了。<br><img src="18.png" alt=""></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 运动规划 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> motion planning </tag>
+            
+            <tag> 运动规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>运动规划一--图与网格的路径规划</title>
       <link href="/2020/08/09/motion-plan-1/"/>
       <url>/2020/08/09/motion-plan-1/</url>

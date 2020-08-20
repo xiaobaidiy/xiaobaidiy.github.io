@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="运动规划一--图与网格的路径规划, “Robot”">
+    <meta name="keywords" content="运动规划二--Configuration Space, “Robot”">
     <meta name="description" content="欢乐搞机">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>运动规划一--图与网格的路径规划 | XiaoBai Robot</title>
+    <title>运动规划二--Configuration Space | XiaoBai Robot</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -304,7 +304,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">运动规划一--图与网格的路径规划</h1>
+                    <h1 class="description center-align post-title">运动规划二--Configuration Space</h1>
                 </div>
             </div>
         </div>
@@ -444,7 +444,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-09
+                    2020-08-19
                 </div>
                 
 
@@ -453,7 +453,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1k
+                    1.6k
                 </div>
                 
 
@@ -468,26 +468,17 @@
                 <blockquote>
 <p>本系列文章是以CJ Taylor老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-motion-planning/home/welcome" target="_blank" rel="noopener">Robotics: Computational Motion Planning</a>为参考，进行归纳整理。</p>
 </blockquote>
-<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Motion planning的目标是可以让机器人自动的决定如何从一个点移动到另一个点，这中间可能会有障碍，也可能无法到达。为了解决这个问题我们可以将地图转换成网格的形式，也可以转换成图的形式。在网格这种形式下，每一个格子都是一个node，每个node之间的cost是一样的；在图这种形式下，每个node之间cost不一定是一样的。我认为网格的形式更适合室内做motion planning，而图的形式则更适合城市交通。<br><img src="1.png" alt=""></p>
-<h1 id="Grassfire-Algorithm"><a href="#Grassfire-Algorithm" class="headerlink" title="Grassfire Algorithm"></a>Grassfire Algorithm</h1><p>Grassfire Algorithm是应用于网格的算法，做法就像它的名字一样，从目标node开始并且将它的cost设为0，逐个访问周围的node并给它们的cost加1，直到找到开始的node，开始的node上的cost就是最小的cost，然后沿着cost从大到小就可以找到一条路线。如果经过迭代所有相邻的node都访问过了都没有找到开始的node，那么在这种情况下就没有存在的路线。<br><img src="2.png" alt=""></p>
-<h2 id="Grassfire-algorithm-–-pseudo-code"><a href="#Grassfire-algorithm-–-pseudo-code" class="headerlink" title="Grassfire algorithm – pseudo code"></a>Grassfire algorithm – pseudo code</h2><p><img src="3.png" alt=""></p>
-<h2 id="Grassfire-algorithm-–-Computational-Complexity"><a href="#Grassfire-algorithm-–-Computational-Complexity" class="headerlink" title="Grassfire algorithm – Computational Complexity"></a>Grassfire algorithm – Computational Complexity</h2><p>在算法迭代的过程中所有的node只会被遍历一次，所以它的计算复杂度为：<br>$$<br>\mathcal O(|V|) \text{，$V$是图中node的数量}<br>$$</p>
-<h1 id="Dijkstra’s-Algorithm"><a href="#Dijkstra’s-Algorithm" class="headerlink" title="Dijkstra’s Algorithm"></a>Dijkstra’s Algorithm</h1><p>Grassfire Algorithm可应用于图的算法，那么它就同样也可以用于网格，只要将每个node之间的cost设为1即可。它的做法是先从起始node开始，找到他周围的所有的node，并且记下到它们的cost，接着访问cost最小的node，同样找到它周围的所有node，如果它周围的node有已经被标记的，那么就需要判断，如果从它过去cost小的话就将它原本的cost改掉，如果不是的话就保持不变，对于未标记的node就将它的cost累加即可，以此迭代直到访问目标node。在下图这个例子中，红色的node是已经被访问过的，而蓝色的node是还在被观察的node。<br><img src="4.png" alt=""></p>
-<h2 id="Dijkstra’s-algorithm-–-pseudo-code"><a href="#Dijkstra’s-algorithm-–-pseudo-code" class="headerlink" title="Dijkstra’s algorithm – pseudo code"></a>Dijkstra’s algorithm – pseudo code</h2><p><img src="5.png" alt=""></p>
-<h2 id="Dijkstra’s-algorithm-–-Computational-Complexity"><a href="#Dijkstra’s-algorithm-–-Computational-Complexity" class="headerlink" title="Dijkstra’s algorithm – Computational Complexity"></a>Dijkstra’s algorithm – Computational Complexity</h2><p>相比grassfire algorithm，Dijkstra’s algorithm每次迭代所选择访问的node并不是随机的，而是当前cost最小的，所以每一次迭代都会再遍历一次被观察的node，所以它的计算复杂度为：<br>$$<br>\mathcal O(|V|^2) \text{，$V$是图中node的数量}<br>$$但是，如果我们始终用priority queue来保持被观察的node是排序好的，那么它的计算复杂度变为：<br>$$<br>\mathcal O((|E|+|V|)log(|V|)) \text{，$V$是图中node的数量, $E$是edge的数量}<br>$$</p>
-<h1 id="A-Algorithm"><a href="#A-Algorithm" class="headerlink" title="A* Algorithm"></a>A* Algorithm</h1><p>Grassfire Algorithm和Dijkstras Algorithm是一种扩散式寻找目标node的方法，几乎要遍历所有的node。这样往往是非常低效的，A*算法用到了一个H函数，这个函数的目的是可以指导算法向着目标node的方向遍历。</p>
-<h2 id="Heuristic-Functions"><a href="#Heuristic-Functions" class="headerlink" title="Heuristic Functions"></a>Heuristic Functions</h2><p>这个H函数就相当于在原来的cost上又多加了一个新的cost，我们要利用这个cost来指导算法遍历的向着目标node的方向遍历，通常这个cost要设计为越靠近目标node，它的值越小。所以它需要满足以下要求：</p>
-<ol>
-<li>H(goal)要为0</li>
-<li>对任意两个相邻node，从node x到node y都有H(x)&lt;=H(y)+d(x,y)。如果H(n)代表的是node n到goal node的距离，假设d(x,y)=1，H(x)=5，H(y)=1的话，可以发现这三个点所形成的三角形就不成立。</li>
-</ol>
-<p>如果满足这两点的话，对于任何node n，H(n)&lt;=从n到goal node的最短路径。</p>
-<p>对于在网格上进行路径规划的情况，通常会用以下两种H函数：</p>
-<ul>
-<li>Euclidean Distance : $H(x_n,y_n)=\sqrt{((x_n-x_g)^2+(y_n-y_g)^2)}$</li>
-<li>Euclidean Distance : $H(x_n,y_n)=|(x_n-x_g)|+|(y_n-y_g)|$</li>
-<li>$(x_n,x_y)$是node n的坐标，$(x_g,x_g)$是目标node的坐标。<h2 id="A-algorithm-–-pseudo-code"><a href="#A-algorithm-–-pseudo-code" class="headerlink" title="A* algorithm – pseudo code"></a>A* algorithm – pseudo code</h2><img src="6.png" alt=""><h2 id="A-algorithm-和-Dijkstra’s-Algorithm对比"><a href="#A-algorithm-和-Dijkstra’s-Algorithm对比" class="headerlink" title="A* algorithm 和 Dijkstra’s Algorithm对比"></a>A* algorithm 和 Dijkstra’s Algorithm对比</h2><img src="7.png" alt=""></li>
-</ul>
+<h1 id="Configuration-Space"><a href="#Configuration-Space" class="headerlink" title="Configuration Space"></a>Configuration Space</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>上一讲中我们将motion planning问题转化到了图上，但是这样对于机器人的位置描述是离散的。然而在实际中，大多数机器人都是在空间中连续移动的，所以我们用到了Cspace。</p>
+<h2 id="平面移动机器人"><a href="#平面移动机器人" class="headerlink" title="平面移动机器人"></a>平面移动机器人</h2><p>假设有下图所示的机器人，它可以在平面内移动到任意地方，因此这个机器人就有2个DOF，并且我们可以将这个机器人的Cspace与平面上的坐标联系起来，也就是说Cspace描述了这个机器人可以到达的位置。<br><img src="1.png" alt=""><br>当我们在平面增加了一个固定的障碍物后，我们需要在Cspace表示出来有障碍物的地方是不能到达的，如下图所示，其中黑色的部分就是障碍物的Cspace。这里我们将robot定义为一个点，然后将它的外形与obstacle结合，就有了configuration space obstacle，这样的话就可以考虑robot是一个点从而进行路径规划。所以我们发现机器人的外形也会影响它的Cspace。<br><img src="2.png" alt=""><br><img src="3.png" alt=""></p>
+<h1 id="RR-Arm"><a href="#RR-Arm" class="headerlink" title="RR Arm"></a>RR Arm</h1><p>Cspace是可以应用到许多的机器人上，这里用一个简单的平面RR机械臂举个例子。我们可以考虑将两个手臂的转动角度$\theta_1$和$\theta_2$与Cspace联系起来。如下图所示，右图横坐标是$\theta_1$的角度，纵坐标是$\theta_2$的角度，现在没有障碍物，所以右图的Cspace整个都是free space。<br><img src="4.png" alt=""><br>当我们将障碍物加入环境中时我们就要考虑哪一种configuration是不可行的，也就是说哪一种（$\theta_1$，$\theta_2$）是会造成碰撞的。如下图所示，由于有障碍物的存在，所以有些角度的组合是不可行的。有了这样的Cspace之后，我们就可以将起始点和终点对应的（$\theta_1$，$\theta_2$）标出来，然后进行路径规划。<br><img src="5.png" alt=""></p>
+<h1 id="Piano-Mover’s-Problem"><a href="#Piano-Mover’s-Problem" class="headerlink" title="Piano Mover’s Problem"></a>Piano Mover’s Problem</h1><p>假设有一个机器人它可以在平面内移动和旋转，所以它就有3个DOF可以表示为（$t_x$，$t_y$，$\theta$），那么它的Cspace就是3D的。如下图所示，当我们需要规划机器人穿过那个洞时，就需要考虑到它的位置和角度，就要在一个3D的Cspace上进行规划。如果是一个RRRRR Arm的话，它的Cspace就是5维的，所以不同的机器人可能会有不同维度的Cspace。<br><img src="6.png" alt=""></p>
+<h1 id="Visibilty-Graph"><a href="#Visibilty-Graph" class="headerlink" title="Visibilty Graph"></a>Visibilty Graph</h1><p>现在我们有了Cspace，那么为了应用我们之前的算法就需要将他转换成图的形式。转化的方式就是将Cspace里顶点，包括障碍物顶点，边界的顶点，起始点和终点，如果可以连接起来并且不被障碍物阻挡那就将它们连接起来，这样就形成了一个图，就可以用dijkstra或者A*算法解决了。<br><img src="7.png" alt=""></p>
+<h1 id="Trapezoidal-Decomposition"><a href="#Trapezoidal-Decomposition" class="headerlink" title="Trapezoidal Decomposition"></a>Trapezoidal Decomposition</h1><p>梯形分解法的目的是将Cspace的free space简化，这个方法用在configuration space obstables是多边形的情况时是十分有效的。它会将整体空间变成一张图，然后利用各区的点和边来表明相邻关系。在下图这个例子中，首先我们对obstacles的顶点的x轴坐标进行划分，将free space划分为了不同的区域。<br><img src="8.png" alt=""><br>然后我们用绿色的点来代表那些独立的free space区域，将相邻的区域连接起来，这样就形成了一个图，如绿色部分所示。然后找出哪个区域包含起始点和终点，然后就可以规划出一条路径。但是这个路径只是说明了robot可以从起始区域开始，沿着某些区域到达终点所在的区域，这并不是准确的路径规划。可能还需要进一步的规划，这个在视屏里没有介绍。<br><img src="9.png" alt=""><br><img src="10.png" alt=""></p>
+<h1 id="Collision-Detection-and-Planning"><a href="#Collision-Detection-and-Planning" class="headerlink" title="Collision Detection and Planning"></a>Collision Detection and Planning</h1><p>这一节将介绍一种方法来判断机器人在某种configuration下会不会与障碍物发生碰撞，从而得到有障碍物的Cspace。</p>
+<h2 id="Collision-Detection-Function"><a href="#Collision-Detection-Function" class="headerlink" title="Collision Detection Function"></a>Collision Detection Function</h2><p>为了方便理解，我们设一个function叫做CollisionCheck(x)，其中x是Cspace中的一个点。如果x是在free space的，那么CollisionCheck(x)就返回0，反之则返回1。用这个function遍历整个Cspace就可以绘制出来一个包含障碍物的Cspace。<br><img src="11.png" alt=""></p>
+<h2 id="Collision-Detection"><a href="#Collision-Detection" class="headerlink" title="Collision Detection"></a>Collision Detection</h2><p>那么该如何实现碰撞检测呢？碰撞检测的方法如图所示，在这里我们可以使用一系列三角形来表示机器人和障碍物，这样就把机器人和障碍物是否相撞的问题转化为了三角形重叠的问题。<br><img src="12.png" alt=""><br>我们可以通过检查两个三角形的所有边，并且测试这些边中是否存在一条边使得一个三角形的所有点位于该边的一侧，另一个三角形的所有点位于该边的另一侧。我们最多需要检测两个三角形的六条边，如果找到一条边满足上述条件，那么就证明这两个三角形不重叠，反之，这两个三角形就重叠。<br><img src="13.png" alt=""><br><img src="14.png" alt=""></p>
+<h2 id="Sampled-Points-in-freespace"><a href="#Sampled-Points-in-freespace" class="headerlink" title="Sampled Points in freespace"></a>Sampled Points in freespace</h2><p>对于连续的Cspace我们无法使用A*算法和Dijkstra算法来进行路径规划，我们可以对它进行网格化处理，也就是采样的方式。对于每一个采样点我们使用CollisionCheck函数来确定它是否是在free space，free space中的所有采样点都被视为图中的node。由于是采样，所以可能会导致free space的描述不准确，这里我们先假设相邻的node之间都是free space，于是我们就可以在这个图上进行路径规划，为了保证起始点和终点都是图中的两个节点，我们需要进行选择或者增加起始点和终点在图中。<br><img src="15.png" alt=""></p>
+<h1 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h1><p>这里用一个RR Arm进行举例，首先我们要根据CollisionCheck function来得到Cspace。<br><img src="16.png" alt=""><br>然后在Cspace上标出起始点和终止点，并且用Dijkstra算法进行遍历。<br><img src="17.png" alt=""><br>找到终止点后，就可以回溯一条最短路径来控制$\theta_1$和$\theta_2$到达终点了。<br><img src="18.png" alt=""></p>
 
             </div>
             <hr/>
@@ -513,7 +504,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/08/09/motion-plan-1/">http://xiaobaidiy.github.io/2020/08/09/motion-plan-1/</a>
+                    <a href="http://xiaobaidiy.github.io/2020/08/19/motion-plan-2/">http://xiaobaidiy.github.io/2020/08/19/motion-plan-2/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -601,7 +592,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-08-09T20-55-40',
+        id: '2020-08-19T15-05-56',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -625,9 +616,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/08/19/motion-plan-2/">
                     <div class="card-image">
@@ -644,9 +636,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-19
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -659,6 +651,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -681,30 +674,30 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/02/uav-6/">
+                <a href="/2020/08/09/motion-plan-1/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/31.jpg" class="responsive-img" alt="四旋翼六--四旋翼的路径规划">
+                        <img src="/medias/featureimages/34.jpg" class="responsive-img" alt="运动规划一--图与网格的路径规划">
                         
-                        <span class="card-title">四旋翼六--四旋翼的路径规划</span>
+                        <span class="card-title">运动规划一--图与网格的路径规划</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍无人机的四旋翼的路径规划
+                            本文将介绍机器人运动规划的图与网格的路径规划
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-02
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-09
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E6%97%A0%E4%BA%BA%E6%9C%BA/" class="post-category">
-                                    无人机
+                            <a href="/categories/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/" class="post-category">
+                                    运动规划
                                 </a>
                             
                             
@@ -714,16 +707,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Drone/">
-                        <span class="chip bg-color">Drone</span>
+                    <a href="/tags/motion-planning/">
+                        <span class="chip bg-color">motion planning</span>
                     </a>
                     
-                    <a href="/tags/%E5%9B%9B%E6%97%8B%E7%BF%BC/">
-                        <span class="chip bg-color">四旋翼</span>
-                    </a>
-                    
-                    <a href="/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA/">
-                        <span class="chip bg-color">无人机</span>
+                    <a href="/tags/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/">
+                        <span class="chip bg-color">运动规划</span>
                     </a>
                     
                 </div>
