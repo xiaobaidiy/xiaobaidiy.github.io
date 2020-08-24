@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>运动规划四--Artificial Potential Fields</title>
+      <link href="/2020/08/24/motion-plan-4/"/>
+      <url>/2020/08/24/motion-plan-4/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>本系列文章是以CJ Taylor老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-motion-planning/home/welcome" target="_blank" rel="noopener">Robotics: Computational Motion Planning</a>为参考，进行归纳整理。</p></blockquote><h1 id="Artificial-Potential-Fields"><a href="#Artificial-Potential-Fields" class="headerlink" title="Artificial Potential Fields"></a>Artificial Potential Fields</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>本节我们将介绍如何在人工势能场中引导机器人在充满障碍物的环境中运动，基本思路是在Cspace内构造一个平滑的函数，当机器人靠近障碍物时该函数值较高；远离障碍物时，函数值较低。同时，我们还希望在目标点时函数值最低，当远离这个点时函数值增加。如果我们可以构造这样一个函数，我们就可以用它的导数来导航机器人到目标点。本节将以下图所示的2D Cspace为例，红色的点是目标点。<br><img src="1.png" alt=""></p><h2 id="Constructing-an-Attractive-Potential-Field"><a href="#Constructing-an-Attractive-Potential-Field" class="headerlink" title="Constructing an Attractive Potential Field"></a>Constructing an Attractive Potential Field</h2><p>首先我们要构造一个吸引函数，当点在目标点时函数值最小，远离目标点时函数值增大。我们可以用一个二次函数$f_a(x)$来实现：<br>$$<br>f_a(x)=\xi (||x-x_g||^2) \\<br>$$其中$x$是robot现在的位置，$x_g$是目标位置，$\xi$是一个常数。如下图所示，这个函数的图像像一个碗。如果机器人按照这个函数的梯度走，它就会引导机器人朝着目标点前进。<br><img src="2.png" alt=""></p><h2 id="Constructing-a-Repulsive-Potential-Field"><a href="#Constructing-a-Repulsive-Potential-Field" class="headerlink" title="Constructing a Repulsive Potential Field"></a>Constructing a Repulsive Potential Field</h2><p>除了要到达目标位置外，我们还希望机器人可以绕开障碍物，为此我们有了第二个函数$f_r(x)$，它是排斥函数，当机器人靠近障碍物时函数值增大，远离障碍物时函数值减小。<br>$$<br>f_r(x) =<br>\begin{cases}<br>\eta (\frac{1}{\rho (x)}-\frac{1}{d_0})^2 &amp; if\rho(x)\le d_0 \\<br>0 &amp; if\rho(x)\gt d_0<br>\end{cases}<br>$$其中x是Cspace中的一个点，$\eta$是一个常数，$d_0$是一个参数，只有当机器人的位置距离障碍物小于$d_0$时，这个方程才有作用。如下图所示，像一座座山丘一样。<br><img src="3.png" alt=""></p><h2 id="The-Combined-Potential-Field"><a href="#The-Combined-Potential-Field" class="headerlink" title="The Combined Potential Field"></a>The Combined Potential Field</h2><p>有了这两个field之后，我们就可以简单的将他们叠加起来，attractive potential field会吸引机器人到目标点，repulsive potential field则会帮助机器人避开障碍物。如下图所示：<br><img src="4.png" alt=""></p><h2 id="Gradient-Based-Control-Strategy"><a href="#Gradient-Based-Control-Strategy" class="headerlink" title="Gradient Based Control Strategy"></a>Gradient Based Control Strategy</h2><p>在有了这两个场的叠加场后，我们就可以利用它的导数来进行导航，那么机器人移动的方向可以用如下方式得到：<br>$$<br>\mathbf v \propto - \nabla f(x) = -\begin{pmatrix}<br>\frac {\partial f(x)}{\partial x_1} \\<br>\frac {\partial f(x)}{\partial x_2}<br>\end{pmatrix}<br>$$在选择一个机器人的移动速度||v||，这里可以选择一个恒定的速度，也可以根据与目标的距离来切换速度，可以让机器人在接近目标点时减速，避免冲过头。<br><img src="5.png" alt=""></p><h2 id="Quiver-Plot"><a href="#Quiver-Plot" class="headerlink" title="Quiver Plot"></a>Quiver Plot</h2><p>用箭头来表示各个点在Cspace里的梯度方向，有了这样的图之后，机器人只要知道它的位置以及一些自身速度以及姿态数据就能完成导航任务。<br><img src="6.png" alt=""><br>下图是几个例子：<br><img src="7.png" alt=""></p><h1 id="Issue-with-Artificial-Potential-Fields"><a href="#Issue-with-Artificial-Potential-Fields" class="headerlink" title="Issue with Artificial Potential Fields"></a>Issue with Artificial Potential Fields</h1><p>理想情况下，人工势能场只会在终点处出现全局最小值，但是在实际中，除终点外在其他位置也可能出现局部最小值的情况。如下图所示的Cspace以及它的势能场：<br><img src="8.png" alt=""><br>在这种情况下，机器人能否到达目标点取决于机器人的起始位置。下图展示了机器人落入局部最小点的例子：<br><img src="9.png" alt=""></p><h1 id="Generalizing-Potential-Fields"><a href="#Generalizing-Potential-Fields" class="headerlink" title="Generalizing Potential Fields"></a>Generalizing Potential Fields</h1><p>对于复杂的机器人系统比如RRRRRR Arm来说，我们可以在它的表面上设定一系列的控制点，然后每一个控制点可以一个Cspace，$P_i(x)$。对于每一个控制点可以算出它的artificial potential field，$f_i(P_i(x))$。最终的artificial potential field就是将它们都加起来，$f(x)=\sum {_i}f_i(P_i(x))$。最后用偏导数计算每一个控制点的速度：<br>$$<br>\mathbf v \propto - \nabla f(x) = -\begin{pmatrix}<br>\frac {\partial f(x)}{\partial x_1} \\<br>\cdot \\<br>\cdot \\<br>\cdot \\<br>\frac {\partial f(x)}{\partial x_n}<br>\end{pmatrix}<br>$$但是这些点的位置要如何控制，还需要反推到实际机器手臂的每个joint的转动角度。<br><img src="10.png" alt=""></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 运动规划 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> motion planning </tag>
+            
+            <tag> 运动规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>运动规划三--Sample Based Motion Planning Methods</title>
       <link href="/2020/08/22/motion-plan-3/"/>
       <url>/2020/08/22/motion-plan-3/</url>

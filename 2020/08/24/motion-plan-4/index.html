@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="运动规划三--Sample Based Motion Planning Methods, “Robot”">
+    <meta name="keywords" content="运动规划四--Artificial Potential Fields, “Robot”">
     <meta name="description" content="欢乐搞机">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>运动规划三--Sample Based Motion Planning Methods | XiaoBai Robot</title>
+    <title>运动规划四--Artificial Potential Fields | XiaoBai Robot</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -304,7 +304,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">运动规划三--Sample Based Motion Planning Methods</h1>
+                    <h1 class="description center-align post-title">运动规划四--Artificial Potential Fields</h1>
                 </div>
             </div>
         </div>
@@ -444,7 +444,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-22
+                    2020-08-24
                 </div>
                 
 
@@ -453,7 +453,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.6k
+                    1k
                 </div>
                 
 
@@ -468,16 +468,14 @@
                 <blockquote>
 <p>本系列文章是以CJ Taylor老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-motion-planning/home/welcome" target="_blank" rel="noopener">Robotics: Computational Motion Planning</a>为参考，进行归纳整理。</p>
 </blockquote>
-<h1 id="Probabilistic-Road-Maps"><a href="#Probabilistic-Road-Maps" class="headerlink" title="Probabilistic Road Maps"></a>Probabilistic Road Maps</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>之前，我们介绍了Cspace，还讨论了如何构造collision check function来检查Cspace中的某个点是否存在碰撞，从而判断这个点是否处于free space。我们还讨论了一个简单的规划方案，对Cspace进行采样，然后用collision check function来进行检查，将free space的各点连接起来形成一个图，从而进行路径规划。但是这个方法在Cspace是2D或3D时是可行的，对于更高维度的Cspace样本数量是巨大的。这里介绍另一种方法来减少采样量，它在Cspace中采样是随机的，而不是均匀的。</p>
-<h2 id="Probabilistic-Road-Maps过程"><a href="#Probabilistic-Road-Maps过程" class="headerlink" title="Probabilistic Road Maps过程"></a>Probabilistic Road Maps过程</h2><p>Probabilistic Road Map简称为PRM，它建立图的方法是：第一步我们在Cspace里随机产生一个点x，如果这个点在free space里，那么就用Dist Function找到离它较近的k个点，k是自己设定的；第二步试着连接x和这k个点并且用LocalPlaner进行判断这个线能否不经过障碍物连接起来，如果可以的话就形成了一条新的边；第三步重复第一步和第二步n次，n也是自己设定的。所以说这个方法需要自己设定图中点的数量以及每个点周围最多与几个点相连。结束了之后我们就在free space建立了一个图。下图说明了增加一个点的过程，增加的点为绿色，增加的线为绿色实线，无法增加的点为绿色虚线。<br><img src="1.png" alt=""></p>
-<h2 id="Probabilistic-Road-Maps-Pseudocode"><a href="#Probabilistic-Road-Maps-Pseudocode" class="headerlink" title="Probabilistic Road Maps Pseudocode"></a>Probabilistic Road Maps Pseudocode</h2><p>下图是PRM过程的pseudo code，最重要的就是要实现Dist function来测量Cspace中点和点之间的距离，以及LocalPlanner function来判断某个点能否和周围的点进行连接。<br><img src="2.png" alt=""></p>
-<h2 id="The-Dist-Function"><a href="#The-Dist-Function" class="headerlink" title="The Dist Function"></a>The Dist Function</h2><p>Dist Funcition顾名思义就是点和点之间的距离，通常有这两种算法：<br>$$<br>\begin{aligned}<br>&amp;Dist_1=\sum_i |x_i-y_i| \\<br>&amp;Dist_2=\sqrt {\sum_i (x_i-y_i)^2} \\<br>&amp;\text{其中，$x$和$y$是Cspace里的两个点。}<br>\end{aligned}<br>$$但是在很多例子中Cspace中的点代表的是转动角度，比如拥有转动关节的机械手臂，那么任意两点的角度距离就需要判断是正转近还是反转近，所有就有如下算法：<br>$$<br>Dist(\theta_1,\theta_2)=min(|\theta_1-\theta_2|,(360-|\theta_1-\theta_2|))<br>$$</p>
-<h2 id="The-LocalPlaner-Function"><a href="#The-LocalPlaner-Function" class="headerlink" title="The LocalPlaner Function"></a>The LocalPlaner Function</h2><p>LocalPlaner是用来判断两点之间的线能否不经过障碍物连接起来，方法就是将这段直线均匀采样，再用collision check function来判断这个直线会不会经过障碍物。如下图所示的绿色点线，这条线上的绿点就是采样点，如果这些采样点中存在与障碍物的碰撞，这条线就不能连接，反之就可以连接。<br><img src="3.png" alt=""><br><img src="4.png" alt=""></p>
-<h2 id="添加起始点和终点"><a href="#添加起始点和终点" class="headerlink" title="添加起始点和终点"></a>添加起始点和终点</h2><p>现在我们用上述方法得到了一个roadmap如下图所示：<br><img src="5.png" alt=""><br>然后用同样得方法找到起始点和终点周围得点，并用LocalPlanner判断它们能否连接起来，如果可以的话就连接起来。<br><img src="6.png" alt=""><br>最后再用Dijkstra算法找到一条路径。<br><img src="7.png" alt=""><br>这种方法得一个优点就是，一旦roadmap建立好之后，我们就能反复使用这个roadmap，只需要改变起始点和终点就可以。</p>
-<h1 id="Sample-Based-Planners的特点"><a href="#Sample-Based-Planners的特点" class="headerlink" title="Sample Based Planners的特点"></a>Sample Based Planners的特点</h1><p>对于完备的路径算法来说，如果有路径存在它就能找到，反之则会反馈失败。但是对于PRM算法，有时即便存在路径，算法也不一定能找到，因为它是随机采样，那么采样点的多少以及位置就会影响最终的结果。考虑一下下图的情况，通过这个狭窄通道的路径是存在的，但是由于通道很小所以落在这里的点就很少，很难练成一条通路。<br><img src="8.png" alt=""><br>为了找到一条可行的路径，那么我们就要增加大量的采样点，增加了算法复杂度。而且由于样本点的随机性，产生的轨迹有时看起来很不平滑，所以通常人们会尝试一些方法让它的轨迹边缘变得平滑一些。<br><img src="9.png" alt=""><br>但是，如果该过程找不到路径，我们很难确定是确实没有路径还是说找的点不够多。因此，在实际应用中，采样点的数量是此过程的重要参数。为了解决上述问题，现在已经提出了很多能够让算法有目的的进行采样的方法，从而增加了在这些情况下找到路径的可能性。其中一种方法是在靠近障碍物附近多采样，从而构建出一条可以绕过障碍物的路径。其实应用PRM真正的优势在于它可以应用于高维的Cspace。</p>
-<h1 id="Rapidly-Exploring-Random-Trees"><a href="#Rapidly-Exploring-Random-Trees" class="headerlink" title="Rapidly Exploring Random Trees"></a>Rapidly Exploring Random Trees</h1><p>PRM在第一阶段是在整个free space建立roadmap的，并未考虑任何一对特定的起点和终点，这种方式的优点就是可以反复使用这个roadmap对不同的起点和终点进行路径规划。但是有时候，我们可能只想要一次特定的规划，在这种情况下，在整个free space建立roadmap就很浪费时间。所以我们就提到了另一种方法，叫做Rapidly Exploring Random Trees，简称RRT，它可以用来规划特定的起始点和终点之间的路径。</p>
-<h2 id="RRT-Procedure"><a href="#RRT-Procedure" class="headerlink" title="RRT Procedure"></a>RRT Procedure</h2><p>RRT过程就是在Cspace中建立树的过程，第一步找到起始点作为树的root，第二步随机产生一个点x在Cspace中，如果这个点在free space则找到距离它最近的一个树中的点y，第三步判断x，y之间的距离是不是大于delta，如果大于delta则说明x距离y太远，那我们就在x到y的直线上找到一个点z，让z到y的距离小于delta，否则的话就直接用x这个点，第四步用LocalPlanner function判断x或者z到y点能否进行连接，如果可以则连接，否则放弃这个点。然后重复第二步到第四步n次，最后这个以起始点为root的树就建立好了。<br><img src="10.png" alt=""><br><img src="11.png" alt=""><br><img src="12.png" alt=""></p>
-<h2 id="RRT-2-tree-procedure"><a href="#RRT-2-tree-procedure" class="headerlink" title="RRT 2 tree procedure"></a>RRT 2 tree procedure</h2><p>RRT 2 tree就是分别将起始点和终点作为两个树的root，然后交替延展各自的树，直到两个树之间可以连接起来。<br><img src="13.png" alt=""><br><img src="14.png" alt=""><br><img src="15.png" alt=""></p>
+<h1 id="Artificial-Potential-Fields"><a href="#Artificial-Potential-Fields" class="headerlink" title="Artificial Potential Fields"></a>Artificial Potential Fields</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>本节我们将介绍如何在人工势能场中引导机器人在充满障碍物的环境中运动，基本思路是在Cspace内构造一个平滑的函数，当机器人靠近障碍物时该函数值较高；远离障碍物时，函数值较低。同时，我们还希望在目标点时函数值最低，当远离这个点时函数值增加。如果我们可以构造这样一个函数，我们就可以用它的导数来导航机器人到目标点。本节将以下图所示的2D Cspace为例，红色的点是目标点。<br><img src="1.png" alt=""></p>
+<h2 id="Constructing-an-Attractive-Potential-Field"><a href="#Constructing-an-Attractive-Potential-Field" class="headerlink" title="Constructing an Attractive Potential Field"></a>Constructing an Attractive Potential Field</h2><p>首先我们要构造一个吸引函数，当点在目标点时函数值最小，远离目标点时函数值增大。我们可以用一个二次函数$f_a(x)$来实现：<br>$$<br>f_a(x)=\xi (||x-x_g||^2) \\<br>$$其中$x$是robot现在的位置，$x_g$是目标位置，$\xi$是一个常数。如下图所示，这个函数的图像像一个碗。如果机器人按照这个函数的梯度走，它就会引导机器人朝着目标点前进。<br><img src="2.png" alt=""></p>
+<h2 id="Constructing-a-Repulsive-Potential-Field"><a href="#Constructing-a-Repulsive-Potential-Field" class="headerlink" title="Constructing a Repulsive Potential Field"></a>Constructing a Repulsive Potential Field</h2><p>除了要到达目标位置外，我们还希望机器人可以绕开障碍物，为此我们有了第二个函数$f_r(x)$，它是排斥函数，当机器人靠近障碍物时函数值增大，远离障碍物时函数值减小。<br>$$<br>f_r(x) =<br>\begin{cases}<br>\eta (\frac{1}{\rho (x)}-\frac{1}{d_0})^2 &amp; if\rho(x)\le d_0 \\<br>0 &amp; if\rho(x)\gt d_0<br>\end{cases}<br>$$其中x是Cspace中的一个点，$\eta$是一个常数，$d_0$是一个参数，只有当机器人的位置距离障碍物小于$d_0$时，这个方程才有作用。如下图所示，像一座座山丘一样。<br><img src="3.png" alt=""></p>
+<h2 id="The-Combined-Potential-Field"><a href="#The-Combined-Potential-Field" class="headerlink" title="The Combined Potential Field"></a>The Combined Potential Field</h2><p>有了这两个field之后，我们就可以简单的将他们叠加起来，attractive potential field会吸引机器人到目标点，repulsive potential field则会帮助机器人避开障碍物。如下图所示：<br><img src="4.png" alt=""></p>
+<h2 id="Gradient-Based-Control-Strategy"><a href="#Gradient-Based-Control-Strategy" class="headerlink" title="Gradient Based Control Strategy"></a>Gradient Based Control Strategy</h2><p>在有了这两个场的叠加场后，我们就可以利用它的导数来进行导航，那么机器人移动的方向可以用如下方式得到：<br>$$<br>\mathbf v \propto - \nabla f(x) = -\begin{pmatrix}<br>\frac {\partial f(x)}{\partial x_1} \\<br>\frac {\partial f(x)}{\partial x_2}<br>\end{pmatrix}<br>$$在选择一个机器人的移动速度||v||，这里可以选择一个恒定的速度，也可以根据与目标的距离来切换速度，可以让机器人在接近目标点时减速，避免冲过头。<br><img src="5.png" alt=""></p>
+<h2 id="Quiver-Plot"><a href="#Quiver-Plot" class="headerlink" title="Quiver Plot"></a>Quiver Plot</h2><p>用箭头来表示各个点在Cspace里的梯度方向，有了这样的图之后，机器人只要知道它的位置以及一些自身速度以及姿态数据就能完成导航任务。<br><img src="6.png" alt=""><br>下图是几个例子：<br><img src="7.png" alt=""></p>
+<h1 id="Issue-with-Artificial-Potential-Fields"><a href="#Issue-with-Artificial-Potential-Fields" class="headerlink" title="Issue with Artificial Potential Fields"></a>Issue with Artificial Potential Fields</h1><p>理想情况下，人工势能场只会在终点处出现全局最小值，但是在实际中，除终点外在其他位置也可能出现局部最小值的情况。如下图所示的Cspace以及它的势能场：<br><img src="8.png" alt=""><br>在这种情况下，机器人能否到达目标点取决于机器人的起始位置。下图展示了机器人落入局部最小点的例子：<br><img src="9.png" alt=""></p>
+<h1 id="Generalizing-Potential-Fields"><a href="#Generalizing-Potential-Fields" class="headerlink" title="Generalizing Potential Fields"></a>Generalizing Potential Fields</h1><p>对于复杂的机器人系统比如RRRRRR Arm来说，我们可以在它的表面上设定一系列的控制点，然后每一个控制点可以一个Cspace，$P_i(x)$。对于每一个控制点可以算出它的artificial potential field，$f_i(P_i(x))$。最终的artificial potential field就是将它们都加起来，$f(x)=\sum {_i}f_i(P_i(x))$。最后用偏导数计算每一个控制点的速度：<br>$$<br>\mathbf v \propto - \nabla f(x) = -\begin{pmatrix}<br>\frac {\partial f(x)}{\partial x_1} \\<br>\cdot \\<br>\cdot \\<br>\cdot \\<br>\frac {\partial f(x)}{\partial x_n}<br>\end{pmatrix}<br>$$但是这些点的位置要如何控制，还需要反推到实际机器手臂的每个joint的转动角度。<br><img src="10.png" alt=""></p>
 
             </div>
             <hr/>
@@ -503,7 +501,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/08/22/motion-plan-3/">http://xiaobaidiy.github.io/2020/08/22/motion-plan-3/</a>
+                    <a href="http://xiaobaidiy.github.io/2020/08/24/motion-plan-4/">http://xiaobaidiy.github.io/2020/08/24/motion-plan-4/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -591,7 +589,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-08-22T15-10-03',
+        id: '2020-08-24T08-11-57',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -615,9 +613,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/08/24/motion-plan-4/">
                     <div class="card-image">
@@ -634,9 +633,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-24
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-24
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -649,6 +648,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -671,23 +671,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/19/motion-plan-2/">
+                <a href="/2020/08/22/motion-plan-3/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/34.jpg" class="responsive-img" alt="运动规划二--Configuration Space">
+                        <img src="/medias/featureimages/34.jpg" class="responsive-img" alt="运动规划三--Sample Based Motion Planning Methods">
                         
-                        <span class="card-title">运动规划二--Configuration Space</span>
+                        <span class="card-title">运动规划三--Sample Based Motion Planning Methods</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍机器人运动规划的Configuration Space
+                            本文将介绍机器人运动规划的Sample Based Motion Planning Methods
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-22
                             </span>
                         <span class="publish-author">
                             
