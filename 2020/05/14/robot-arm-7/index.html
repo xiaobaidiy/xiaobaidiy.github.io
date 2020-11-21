@@ -449,7 +449,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    521
+                    548
                 </div>
                 
 
@@ -475,7 +475,10 @@
 <h1 id="以linear-function-with-parabolic-blends在Cartesian-space下规划轨迹"><a href="#以linear-function-with-parabolic-blends在Cartesian-space下规划轨迹" class="headerlink" title="以linear function with parabolic blends在Cartesian-space下规划轨迹"></a>以linear function with parabolic blends在Cartesian-space下规划轨迹</h1><ol>
 <li>求出$^0P_{6org}$在各DOF（$X,Y,Z,\Phi_X,\Phi_Y,\Phi_Z$）每段的速度和加速度<br><img src="9.png" alt=""></li>
 <li>建立并绘出各DOF在每个时间区段的轨迹<br><img src="10.png" alt=""></li>
-<li>此时轨迹规划已经完成，接下来就要用IK计算出轨迹上所有设定点以及轨迹内插点的六轴转角（计算量很大）。以第二个via point为例：<br><img src="11.png" alt=""><br><img src="12.png" alt=""><br><img src="13.png" alt=""><br><img src="14.png" alt=""><br><img src="15.png" alt=""> </li>
+<li>此时轨迹规划已经完成，接下来就要用IK计算出轨迹上所有设定点以及轨迹内插点的六轴转角（计算量很大）。以第二个via point为例：<br><img src="11.png" alt=""><br><img src="12.png" alt=""><br><img src="13.png" alt=""><br><img src="14.png" alt=""><br><img src="15.png" alt=""> <blockquote>
+<p>note: 当有多个解时，可以将它带入Transformation Matrix里来验证哪一组解是正确的。</p>
+</blockquote>
+</li>
 <li>将解出的轨迹设定点以及轨迹内插点的六轴转角对各自的时间进行画图：<br><img src="16.png" alt=""> </li>
 <li>将转角带入FK，画出杯子的坐标及姿态，已确认轨迹规划的正确性，同样以第二个via point为例：<br><img src="17.png" alt=""></li>
 </ol>
