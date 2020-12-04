@@ -449,7 +449,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.6k
+                    1.9k
                 </div>
                 
 
@@ -493,6 +493,7 @@
 <td align="center">$z_j$</td>
 </tr>
 </tbody></table>
+<h2 id="如何用Jacobian-Matrix计算每个电机的Torque"><a href="#如何用Jacobian-Matrix计算每个电机的Torque" class="headerlink" title="如何用Jacobian Matrix计算每个电机的Torque"></a>如何用Jacobian Matrix计算每个电机的Torque</h2><p>当我们将Jacobian Matrix转置就得到了如下Matrix：<br>$$<br>J^T=\begin{bmatrix}<br>\frac{\partial x}{\partial \theta_1}&amp;\frac{\partial y}{\partial \theta_1}&amp;\frac{\partial z}{\partial \theta_1} \\<br>\frac{\partial x}{\partial \theta_2}&amp;\frac{\partial y}{\partial \theta_2}&amp;\frac{\partial z}{\partial \theta_2} \\<br>\vdots&amp;\vdots&amp;\vdots \\<br>\frac{\partial x}{\partial \theta_n}&amp;\frac{\partial y}{\partial \theta_n}&amp;\frac{\partial z}{\partial \theta_n} \\<br>\end{bmatrix}<br>$$转置后的Jacobian Matrix每一行就变成了手臂末端点的那条黑色切线，当我们在手臂末端点施加一个力$F=[F_x,F_y,F_z]^T$时，这个$F$力对于每一个joint的torque就是沿着黑色切线方向的力乘以距离，由于这条黑色切线在叉积时已经包含了距离信息，所以直接用这条黑色切线点乘$F$即可：<br>$$<br>\tau=\begin{bmatrix}<br>\tau_1\\<br>\tau_2\\<br>\vdots\\<br>\tau_n\\<br>\end{bmatrix}<br>=\begin{bmatrix}<br>\frac{\partial x}{\partial \theta_1}&amp;\frac{\partial y}{\partial \theta_1}&amp;\frac{\partial z}{\partial \theta_1} \\<br>\frac{\partial x}{\partial \theta_2}&amp;\frac{\partial y}{\partial \theta_2}&amp;\frac{\partial z}{\partial \theta_2} \\<br>\vdots&amp;\vdots&amp;\vdots \\<br>\frac{\partial x}{\partial \theta_n}&amp;\frac{\partial y}{\partial \theta_n}&amp;\frac{\partial z}{\partial \theta_n} \\<br>\end{bmatrix}\begin{bmatrix}<br>F_x\\<br>F_y\\<br>F_z\\<br>\end{bmatrix}<br>$$当然用这个方法计算每个joint的torque时我们忽略了手臂自身的重量，由于手臂自身重量对于每个joint的影响随着手臂的形态的变化而不断变化，所以先暂时不考虑。</p>
 
             </div>
             <hr/>
