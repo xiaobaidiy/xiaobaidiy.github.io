@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="运动规划四--Artificial Potential Fields, “Robot”">
+    <meta name="keywords" content="FPV穿越机-基础知识, “Robot”">
     <meta name="description" content="欢乐搞机">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>运动规划四--Artificial Potential Fields | XiaoBai Robot</title>
+    <title>FPV穿越机-基础知识 | XiaoBai Robot</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -299,12 +299,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/34.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/36.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">运动规划四--Artificial Potential Fields</h1>
+                    <h1 class="description center-align post-title">FPV穿越机-基础知识</h1>
                 </div>
             </div>
         </div>
@@ -415,12 +415,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/motion-planning/">
-                                <span class="chip bg-color">motion planning</span>
+                            <a href="/tags/FPV/">
+                                <span class="chip bg-color">FPV</span>
                             </a>
                         
-                            <a href="/tags/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/">
-                                <span class="chip bg-color">运动规划</span>
+                            <a href="/tags/%E7%A9%BF%E8%B6%8A%E6%9C%BA/">
+                                <span class="chip bg-color">穿越机</span>
                             </a>
                         
                     </div>
@@ -431,8 +431,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/" class="post-category">
-                                运动规划
+                            <a href="/categories/%E7%A9%BF%E8%B6%8A%E6%9C%BA/" class="post-category">
+                                穿越机
                             </a>
                         
                     </div>
@@ -444,7 +444,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-24
+                    2020-12-25
                 </div>
                 
 
@@ -465,17 +465,27 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <blockquote>
-<p>本系列文章是以CJ Taylor老师在coursera上的课程<a href="https://www.coursera.org/learn/robotics-motion-planning/home/welcome" target="_blank" rel="noopener">Robotics: Computational Motion Planning</a>为参考，进行归纳整理。</p>
-</blockquote>
-<h1 id="Artificial-Potential-Fields"><a href="#Artificial-Potential-Fields" class="headerlink" title="Artificial Potential Fields"></a>Artificial Potential Fields</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>本节我们将介绍如何在人工势能场中引导机器人在充满障碍物的环境中运动，基本思路是在Cspace内构造一个平滑的函数，当机器人靠近障碍物时该函数值较高；远离障碍物时，函数值较低。同时，我们还希望在目标点时函数值最低，当远离这个点时函数值增加。如果我们可以构造这样一个函数，我们就可以用它的导数来导航机器人到目标点。本节将以下图所示的2D Cspace为例，红色的点是目标点。<br><img src="1.png" alt=""></p>
-<h2 id="Constructing-an-Attractive-Potential-Field"><a href="#Constructing-an-Attractive-Potential-Field" class="headerlink" title="Constructing an Attractive Potential Field"></a>Constructing an Attractive Potential Field</h2><p>首先我们要构造一个吸引函数，当点在目标点时函数值最小，远离目标点时函数值增大。我们可以用一个二次函数$f_a(x)$来实现：<br>$$<br>f_a(x)=\xi (||x-x_g||^2) \\<br>$$其中$x$是robot现在的位置，$x_g$是目标位置，$\xi$是一个常数。如下图所示，这个函数的图像像一个碗。如果机器人按照这个函数的梯度走，它就会引导机器人朝着目标点前进。<br><img src="2.png" alt=""></p>
-<h2 id="Constructing-a-Repulsive-Potential-Field"><a href="#Constructing-a-Repulsive-Potential-Field" class="headerlink" title="Constructing a Repulsive Potential Field"></a>Constructing a Repulsive Potential Field</h2><p>除了要到达目标位置外，我们还希望机器人可以绕开障碍物，为此我们有了第二个函数$f_r(x)$，它是排斥函数，当机器人靠近障碍物时函数值增大，远离障碍物时函数值减小。<br>$$<br>f_r(x) =<br>\begin{cases}<br>\eta (\frac{1}{\rho (x)}-\frac{1}{d_0})^2 &amp; if\rho(x)\le d_0 \\<br>0 &amp; if\rho(x)\gt d_0<br>\end{cases}<br>$$其中x是Cspace中的一个点，$\eta$是一个常数，$d_0$是一个参数，只有当机器人的位置距离障碍物小于$d_0$时，这个方程才有作用。如下图所示，像一座座山丘一样。<br><img src="3.png" alt=""></p>
-<h2 id="The-Combined-Potential-Field"><a href="#The-Combined-Potential-Field" class="headerlink" title="The Combined Potential Field"></a>The Combined Potential Field</h2><p>有了这两个field之后，我们就可以简单的将他们叠加起来，attractive potential field会吸引机器人到目标点，repulsive potential field则会帮助机器人避开障碍物。如下图所示：<br><img src="4.png" alt=""></p>
-<h2 id="Gradient-Based-Control-Strategy"><a href="#Gradient-Based-Control-Strategy" class="headerlink" title="Gradient Based Control Strategy"></a>Gradient Based Control Strategy</h2><p>在有了这两个场的叠加场后，我们就可以利用它的导数来进行导航，那么机器人移动的方向可以用如下方式得到：<br>$$<br>\mathbf v \propto - \nabla f(x) = -\begin{pmatrix}<br>\frac {\partial f(x)}{\partial x_1} \\<br>\frac {\partial f(x)}{\partial x_2}<br>\end{pmatrix}<br>$$在选择一个机器人的移动速度||v||，这里可以选择一个恒定的速度，也可以根据与目标的距离来切换速度，可以让机器人在接近目标点时减速，避免冲过头。<br><img src="5.png" alt=""></p>
-<h2 id="Quiver-Plot"><a href="#Quiver-Plot" class="headerlink" title="Quiver Plot"></a>Quiver Plot</h2><p>用箭头来表示各个点在Cspace里的梯度方向，有了这样的图之后，机器人只要知道它的位置以及一些自身速度以及姿态数据就能完成导航任务。<br><img src="6.png" alt=""><br>下图是几个例子：<br><img src="7.png" alt=""></p>
-<h1 id="Issue-with-Artificial-Potential-Fields"><a href="#Issue-with-Artificial-Potential-Fields" class="headerlink" title="Issue with Artificial Potential Fields"></a>Issue with Artificial Potential Fields</h1><p>理想情况下，人工势能场只会在终点处出现全局最小值，但是在实际中，除终点外在其他位置也可能出现局部最小值的情况。如下图所示的Cspace以及它的势能场：<br><img src="8.png" alt=""><br>在这种情况下，机器人能否到达目标点取决于机器人的起始位置。下图展示了机器人落入局部最小点的例子：<br><img src="9.png" alt=""></p>
-<h1 id="Generalizing-Potential-Fields"><a href="#Generalizing-Potential-Fields" class="headerlink" title="Generalizing Potential Fields"></a>Generalizing Potential Fields</h1><p>对于复杂的机器人系统比如RRRRRR Arm来说，我们可以在它的表面上设定一系列的控制点，然后每一个控制点可以一个Cspace，$P_i(x)$。对于每一个控制点可以算出它的artificial potential field，$f_i(P_i(x))$。最终的artificial potential field就是将它们都加起来，$f(x)=\sum {_i}f_i(P_i(x))$。最后用偏导数计算每一个控制点的速度：<br>$$<br>\mathbf v \propto - \nabla f(x) = -\begin{pmatrix}<br>\frac {\partial f(x)}{\partial x_1} \\<br>\cdot \\<br>\cdot \\<br>\cdot \\<br>\frac {\partial f(x)}{\partial x_n}<br>\end{pmatrix}<br>$$但是这些点的位置要如何控制，还需要反推到实际机器手臂的每个joint的转动角度。<br><img src="10.png" alt=""></p>
+                <h1 id="电池"><a href="#电池" class="headerlink" title="电池"></a>电池</h1><p>用于航模使用的电池大多数都是聚合物锂电池，他们大致可以分为两类：一类为航模电机供电，另一类为遥控器供电也称为控电。他们之间的不同点就是放电倍率不同，接下来我们就了解一些电池的参数：</p>
+<ul>
+<li>电压：电池上标定的电压是额定电压，但不代表电池就会一直保持这个电压，电池的电压会在额定电压附近波动，电压越低说明电量越少，电压越高说明电量越多。</li>
+<li>S和P：S指的是串联，P指的是并联。nSmP的电池指的是有n块电芯串联起来然后有m个这样的串联电池组并联起来。通常航模电池都没有并联也就是只有1P，所以直接称为3S、4S电池。锂聚合物电池单片电芯的额定电压为3.7V，所以3S电池的额定电压就为11.1V，以此类推。</li>
+<li>mah（毫安时）：用来表示电池的容量，xxxxmah就是说这个电池能以xxxxmA的电流持续放电1小时。</li>
+<li>Wh（瓦时）：同样用来表示电池容量，计算方法就是用电压乘以mah。</li>
+<li>Discharge Rate（放电倍率）：也就是电池所能提供的最大放电电流，例如一块放电倍率为85C的电池，电池容量为2200mah，那么最大放电电流为$I_{max}=2.2Ah \times 85C=187A$</li>
+<li>Charge Rate（充电倍率）：与计算最大放电电流一样的方法，可以得到最大充电电流。</li>
+</ul>
+<h1 id="电调"><a href="#电调" class="headerlink" title="电调"></a>电调</h1><p>电调，全称电子调速器，英文全称Electronic Speed Control，简称ESC。根据搭配电机的不同，电调可分为有刷电调和无刷电调。在使用电调前要对电调进行油门行程校准或者编程设置，具体看说明书。接下来我们了解一下ESC的一些参数：</p>
+<ul>
+<li>Battery Eliminator Circuit（BEC）：带BEC的电调会通过动力电池引出一路5V电压给接收机，舵机等设备供电。而对于多轴飞行器的电调来说通常不带BEC，5V低电压可以从分电板引出。</li>
+<li>xxA：这个参数说明了电调所能承受的最大电流，要买哪一个电调还得看电机的最大持续电流以及厂家推荐的电调型号，只要电机的最大持续电流不超过带你调标称的电流就可以了。</li>
+<li>x-xS：这里说明了适用的电池型号，比如2-3S LIPO，就是说使用于2S或3S的锂电池。</li>
+</ul>
+<h1 id="电机"><a href="#电机" class="headerlink" title="电机"></a>电机</h1><p>目前大多数航模电机都采用外转子无刷电机，也有少数小型航模采用有刷电机，例如空心杯。有刷电机两端接电池就可以旋转，反向电压后就可以反向旋转，电压的大小决定了电机的转速，所以通常用PWM来控制电机转速。无刷电机则是通过ESC控制电机转速，当ESC收到控制信号后将输出三相交流电来控制无刷电机，因此电机上的三根线是没有区别的，电机顺时针还是逆时针转动与ESC给这三根线供电的顺序有关，如果通电后发现电机转向不正确，将两根线互换次序即可。接下来我们就了解一下电机的参数：</p>
+<ul>
+<li>例如2212：这个参数指的是电机的尺寸，其中22指的是电机定子的直径是22mm，12指的是定子的长度是12mm。</li>
+<li>例如980KV：这个参数表示电机在空载理想状态下，输入电压每增加1V电机转速增加980r/min。</li>
+<li>搭配螺旋桨：通常螺旋桨越大，拉力越大，但是由于电机的KV值越高，扭矩就会越小，所以低KV值的电机搭配大尺寸螺旋桨，高KV值的电机搭配小尺寸螺旋桨。</li>
+</ul>
 
             </div>
             <hr/>
@@ -501,7 +511,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/08/24/motion-plan-4/">http://xiaobaidiy.github.io/2020/08/24/motion-plan-4/</a>
+                    <a href="http://xiaobaidiy.github.io/2020/12/25/fpv-1/">http://xiaobaidiy.github.io/2020/12/25/fpv-1/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -539,12 +549,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/motion-planning/">
-                                    <span class="chip bg-color">motion planning</span>
+                                <a href="/tags/FPV/">
+                                    <span class="chip bg-color">FPV</span>
                                 </a>
                             
-                                <a href="/tags/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/">
-                                    <span class="chip bg-color">运动规划</span>
+                                <a href="/tags/%E7%A9%BF%E8%B6%8A%E6%9C%BA/">
+                                    <span class="chip bg-color">穿越机</span>
                                 </a>
                             
                         </div>
@@ -589,7 +599,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-08-24T08-11-57',
+        id: '2020-12-25T09-37-05',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -613,9 +623,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/12/25/fpv-1/">
                     <div class="card-image">
@@ -632,9 +643,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-25
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-25
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -647,6 +658,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -669,23 +681,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/22/motion-plan-3/">
+                <a href="/2020/08/24/motion-plan-4/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/34.jpg" class="responsive-img" alt="运动规划三--Sample Based Motion Planning Methods">
+                        <img src="/medias/featureimages/34.jpg" class="responsive-img" alt="运动规划四--Artificial Potential Fields">
                         
-                        <span class="card-title">运动规划三--Sample Based Motion Planning Methods</span>
+                        <span class="card-title">运动规划四--Artificial Potential Fields</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍机器人运动规划的Sample Based Motion Planning Methods
+                            本文将介绍机器人运动规划的Artificial Potential Fields
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-22
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-24
                             </span>
                         <span class="publish-author">
                             
