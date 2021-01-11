@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="FPV穿越机-基础知识, “Robot”">
+    <meta name="keywords" content="现代控制理论, “Robot”">
     <meta name="description" content="欢乐搞机">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>FPV穿越机-基础知识 | XiaoBai Robot</title>
+    <title>现代控制理论 | XiaoBai Robot</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -299,12 +299,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/36.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/32.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">FPV穿越机-基础知识</h1>
+                    <h1 class="description center-align post-title">现代控制理论</h1>
                 </div>
             </div>
         </div>
@@ -415,12 +415,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/FPV/">
-                                <span class="chip bg-color">FPV</span>
-                            </a>
-                        
-                            <a href="/tags/%E7%A9%BF%E8%B6%8A%E6%9C%BA/">
-                                <span class="chip bg-color">穿越机</span>
+                            <a href="/tags/%E7%8E%B0%E4%BB%A3%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">
+                                <span class="chip bg-color">现代控制理论</span>
                             </a>
                         
                     </div>
@@ -431,8 +427,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E7%A9%BF%E8%B6%8A%E6%9C%BA/" class="post-category">
-                                穿越机
+                            <a href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/" class="post-category">
+                                控制理论
                             </a>
                         
                     </div>
@@ -444,7 +440,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-25
+                    2021-01-11
                 </div>
                 
 
@@ -453,7 +449,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    956
                 </div>
                 
 
@@ -465,29 +461,23 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="机架"><a href="#机架" class="headerlink" title="机架"></a>机架</h1><p>机架的功能相当于整个穿越机的一个大底盘，它会承载整个穿越机的所有东西。对于机架的挑选首先确定的就是机架的大小，也就是轴距。轴距指的是两个对角的电机之间的距离，通常有210，190这要的叫法，也就是说两个对角电机的距离为210mm或者是190mm。有的人所说的5寸机，3寸机，其实指的是螺旋桨的大小，对应5寸浆或者是3寸浆。</p>
-<h1 id="电池"><a href="#电池" class="headerlink" title="电池"></a>电池</h1><p>用功能相当于整个穿越机的一个大底盘，它会承载整个穿越机的所有东西。对于机架的挑选首先确定的就是机架的大小，也就是轴距。轴距指的是两个对角的电机之间的距离，通常有210，190这要的叫法，也就是说两个对角电机的距离为210mm或者是190mm于航模使用的电池大多数都是聚合物锂电池，他们大致可以分为两类：一类为航模电机供电，另一类为遥控器供电也称为控电。他们之间的不同点就是放电倍率不同，接下来我们就了解一些电池的参数：</p>
+                <blockquote>
+<p>参考资料：<a href="https://zhuanlan.zhihu.com/p/101049247" target="_blank" rel="noopener">从现代控制理论的角度理解世界</a></p>
+</blockquote>
+<h2 id="现代控制理论内容概述"><a href="#现代控制理论内容概述" class="headerlink" title="现代控制理论内容概述"></a>现代控制理论内容概述</h2><p>现代控制理论中，最核心的概念是状态。现代控制理论通过描述系统内各个变量的状态来描述系统，而不是像经典控制那样，仅仅通过系统的输入和输出来描述系统。一组描述系统变量叫做状态变量，通常记为列向量$x$，形如$x=[x_1,x_2,\ldots,x_n ]^T$。下图为现代控制理论中经典的系统框图。输入$u$与状态变量$x$决定状态变量的导数$\dot x$，$\dot x$通过积分得到下一时刻的$x$，$x$和输入$u$决定输出$y$。当然，并不是框图的每个部分都是在任何系统中都是联通的，比如常常 $D(t)=0$，则输出y只由状态变量$x$决定，如下图公式所示。<br><img src="1.jpg" alt=""><br><img src="2.jpg" alt=""><br>有了模型描述后，一般来说，我们会关心系统的能控性、能观性、稳定性。</p>
 <ul>
-<li>电压：电池上标定的电压是额定电压，但不代表电池就会一直保持这个电压，电池的电压会在额定电压附近波动，电压越低说明电量越少，电压越高说明电量越多。</li>
-<li>S和P：S指的是串联，P指的是并联。nSmP的电池指的是有n块电芯串联起来然后有m个这样的串联电池组并联起来。通常航模电池都没有并联也就是只有1P，所以直接称为3S、4S电池。锂聚合物电池单片电芯的额定电压为3.7V，所以3S电池的额定电压就为11.1V，以此类推。</li>
-<li>mah（毫安时）：用来表示电池的容量，xxxxmah就是说这个电池能以xxxxmA的电流持续放电1小时。</li>
-<li>Wh（瓦时）：同样用来表示电池容量，计算方法就是用电压乘以mah。</li>
-<li>Discharge Rate（放电倍率）：也就是电池所能提供的最大放电电流，例如一块放电倍率为85C的电池，电池容量为2200mah，那么最大放电电流为$I_{max}=2.2Ah \times 85C=187A$</li>
-<li>Charge Rate（充电倍率）：与计算最大放电电流一样的方法，可以得到最大充电电流。</li>
+<li>能控性</li>
 </ul>
-<h1 id="电调"><a href="#电调" class="headerlink" title="电调"></a>电调</h1><p>电调，全称电子调速器，英文全称Electronic Speed Control，简称ESC。根据搭配电机的不同，电调可分为有刷电调和无刷电调。在使用电调前要对电调进行油门行程校准或者编程设置，具体看说明书。接下来我们了解一下ESC的一些参数：</p>
+<p>能控性是指我们通过控制输入$u$，可以让状态变量$x$在有限的时间内达到期望值。想象输入$u$是一股能量，它按照上图框图中的箭头流动，从左端输入后经$\dot x$流到$x$，$x$中有一些变量可以被流经，则它们是可以被$u$所影响控制的，而$x$中另外一些变量不能被流经，则它们不能受到$u$的影响，也就是不可控的。能控性是有$A(t)$和$B(t)$决定的。</p>
 <ul>
-<li>Battery Eliminator Circuit（BEC）：带BEC的电调会通过动力电池引出一路5V电压给接收机，舵机等设备供电。而对于多轴飞行器的电调来说通常不带BEC，5V低电压可以从分电板引出。</li>
-<li>xxA：这个参数说明了电调所能承受的最大电流，要买哪一个电调还得看电机的最大持续电流以及厂家推荐的电调型号，只要电机的最大持续电流不超过带你调标称的电流就可以了。</li>
-<li>x-xS：这里说明了适用的电池型号，比如2-3S LIPO，就是说使用于2S或3S的锂电池。</li>
+<li>能观性</li>
 </ul>
-<h1 id="电机"><a href="#电机" class="headerlink" title="电机"></a>电机</h1><p>目前大多数航模电机都采用外转子无刷电机，也有少数小型航模采用有刷电机，例如空心杯。有刷电机两端接电池就可以旋转，反向电压后就可以反向旋转，电压的大小决定了电机的转速，所以通常用PWM来控制电机转速。无刷电机则是通过ESC控制电机转速，当ESC收到控制信号后将输出三相交流电来控制无刷电机，因此电机上的三根线是没有区别的，电机顺时针还是逆时针转动与ESC给这三根线供电的顺序有关，如果通电后发现电机转向不正确，将两根线互换次序即可。接下来我们就了解一下电机的参数：</p>
+<p>能观性是指我们通过系统的输出$y$可以反推出系统状态变量$x$。也就是说，能量可以从$x$中某些变量流到输出$y$，于是这些变量可以被我们通过观测$y$而得到的；相反如果没有能量从某些变量流到$y$，则这些变量对$y$没有任何影响，也就是说我们不能通过观测$y$来得到这些变量。 它是由$A(t)$和$C(t)$决定的。</p>
 <ul>
-<li>电机尺寸：例如2212，这个参数指的是电机的尺寸，其中22指的是电机定子的直径是22mm，12指的是定子的长度是12mm。</li>
-<li>KV值：例如980KV，这个参数表示电机在空载理想状态下，输入电压每增加1V电机转速增加980r/min。</li>
-<li>搭配螺旋桨：通常螺旋桨越大，拉力越大，但是由于电机的KV值越高，扭矩就会越小，所以低KV值的电机搭配大尺寸螺旋桨，高KV值的电机搭配小尺寸螺旋桨。</li>
+<li>稳定性</li>
 </ul>
-<h1 id="螺旋桨"><a href="#螺旋桨" class="headerlink" title="螺旋桨"></a>螺旋桨</h1><p>螺旋桨首先最直观可以看到的就是它的叶片数量，有2叶浆、3叶浆、4叶浆。浆数越多飞机的力量就越大，所以电机就需要提供更大的扭矩。再一个就是它的尺寸参数了，就像电机的尺寸一样，会由4个数字组成比如5045，前两个数字50指的就是浆的直径为5.0英寸，后面两个数字是螺距，指的是螺旋桨在一个致密介质中旋转一圈所行进的距离为4.5英寸。</p>
+<p>系统受到干扰后能恢复到原来的状态（或在附近小范围内），直观理解如下图所示。<br><img src="3.jpg" alt=""></p>
+<p><strong>那我们是如何让系统的输出$y$符合预期呢？</strong><br>很自然的一个想法就是根据状态变量，计算出一个控制量，反馈到输入环节里，如下图框图红色部分。（此处与经典控制对比，经典控制只能根据系统的输出$y$控制来对系统施加控制。）<br><img src="4.jpg" alt=""><br>但是这个思路有一个最大的问题，就是我们无法得知系统内部的状态变量$x$，我们只能直接观测到系统的输出$y$。为了解决这个问题，我们设计了状态观测器，它根据系统的输出$y$和输入$u$来推断出系统的状态变量，记推断出的状态变量为$\tilde x$。如下图所示，绿色虚线框内为观测器。它构造了一个与原系统一样结构的系统，同样接收输入$u$得到输出，记为$\tilde y$；此外，它还把原系统的输出$y$与观测器输出$\tilde y$的差反馈到观测器中，来使观测器的输出$\tilde y$逼近原系统的输出$y$。也就是说，我们依据原系统构造了一个系统（即观测器），我们想让我们所构造的这个系统与原系统尽可能一致，为达到这个目的，我们通过反馈$\tilde y$与$y$的差来优化我们所构造的系统，并认为当$\tilde y$与$y$相等时，$\tilde x$与$x$相等。<br><img src="5.jpg" alt=""></p>
 
             </div>
             <hr/>
@@ -513,7 +503,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaobaidiy.github.io/2020/12/25/fpv-1/">http://xiaobaidiy.github.io/2020/12/25/fpv-1/</a>
+                    <a href="http://xiaobaidiy.github.io/2021/01/11/modern-control-theory/">http://xiaobaidiy.github.io/2021/01/11/modern-control-theory/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -551,12 +541,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/FPV/">
-                                    <span class="chip bg-color">FPV</span>
-                                </a>
-                            
-                                <a href="/tags/%E7%A9%BF%E8%B6%8A%E6%9C%BA/">
-                                    <span class="chip bg-color">穿越机</span>
+                                <a href="/tags/%E7%8E%B0%E4%BB%A3%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">
+                                    <span class="chip bg-color">现代控制理论</span>
                                 </a>
                             
                         </div>
@@ -601,7 +587,7 @@
         repo: 'xiaobaidiy.github.io',
         owner: 'xiaobaidiy',
         admin: "xiaobaidiy",
-        id: '2020-12-25T09-37-05',
+        id: '2021-01-11T14-33-45',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -625,9 +611,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/01/11/modern-control-theory/">
                     <div class="card-image">
@@ -644,9 +631,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-01-11
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-01-11
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -659,6 +646,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -677,30 +665,30 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/24/motion-plan-4/">
+                <a href="/2020/12/25/fpv-1/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/34.jpg" class="responsive-img" alt="运动规划四--Artificial Potential Fields">
+                        <img src="/medias/featureimages/36.jpg" class="responsive-img" alt="FPV穿越机-基础知识">
                         
-                        <span class="card-title">运动规划四--Artificial Potential Fields</span>
+                        <span class="card-title">FPV穿越机-基础知识</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将介绍机器人运动规划的Artificial Potential Fields
+                            本文将介绍FPV穿越机的基础知识
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-25
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/" class="post-category">
-                                    运动规划
+                            <a href="/categories/%E7%A9%BF%E8%B6%8A%E6%9C%BA/" class="post-category">
+                                    穿越机
                                 </a>
                             
                             
@@ -710,12 +698,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/motion-planning/">
-                        <span class="chip bg-color">motion planning</span>
+                    <a href="/tags/FPV/">
+                        <span class="chip bg-color">FPV</span>
                     </a>
                     
-                    <a href="/tags/%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92/">
-                        <span class="chip bg-color">运动规划</span>
+                    <a href="/tags/%E7%A9%BF%E8%B6%8A%E6%9C%BA/">
+                        <span class="chip bg-color">穿越机</span>
                     </a>
                     
                 </div>
